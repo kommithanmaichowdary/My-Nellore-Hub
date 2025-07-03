@@ -1,0 +1,291 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #2C3E50;
+  --primary-dark: #1a2530;
+  --accent-1: #E74C3C;
+  --accent-1-dark: #c0392b;
+  --accent-2: #3498DB;
+  --accent-2-dark: #2980b9;
+  --background: #FFFFFF;
+  --background-alt: #F2F2F2;
+  --text: #333333;
+}
+
+/* Star effect */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background-color: white;
+  border-radius: 50%;
+  animation: twinkle 2s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Shooting star effect */
+.shooting-star {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1),
+              0 0 0 8px rgba(255, 255, 255, 0.1),
+              0 0 20px rgba(255, 255, 255, 1);
+  animation: shoot 6s infinite linear;
+}
+
+@keyframes shoot {
+  0% {
+    transform: rotate(315deg) translateX(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(315deg) translateX(-1500px);
+    opacity: 0;
+  }
+}
+
+/* Firefly effect */
+.firefly {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  filter: blur(1px);
+}
+
+.firefly:nth-child(1) {
+  animation-delay: 0s;
+  left: 10%;
+  top: 50%;
+}
+
+.firefly:nth-child(2) {
+  animation-delay: 1s;
+  left: 20%;
+  top: 30%;
+}
+
+.firefly:nth-child(3) {
+  animation-delay: 2s;
+  left: 50%;
+  top: 20%;
+}
+
+.firefly:nth-child(4) {
+  animation-delay: 3s;
+  left: 70%;
+  top: 40%;
+}
+
+.firefly:nth-child(5) {
+  animation-delay: 4s;
+  left: 80%;
+  top: 60%;
+}
+
+.firefly:nth-child(6) {
+  animation-delay: 5s;
+  left: 40%;
+  top: 80%;
+}
+
+/* Stat animation */
+.stat-item.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Sector card animations */
+.sector-card.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.sector-card:hover .icon-wrapper {
+  animation: iconFloat 2s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+/* Card hover effects */
+.sector-card .card-content {
+  transition: transform 0.3s ease-out;
+}
+
+.sector-card:hover .card-content {
+  transform: translateY(-5px);
+}
+
+/* Gradient animation */
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientFlow 8s ease infinite;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Background image parallax effect */
+.bg-fixed {
+  background-attachment: fixed;
+  transition: transform 0.5s ease-out;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Enhanced button hover effects */
+.group:hover .group-hover\:rotate-12 {
+  transform: rotate(12deg);
+}
+
+.group:hover .group-hover\:translate-x-1 {
+  transform: translateX(0.25rem);
+}
+
+/* Floating animation for icons */
+.floating {
+  animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
+}
+
+/* Glowing effect */
+.glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(44, 62, 80, 0.2),
+                0 0 20px rgba(44, 62, 80, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(44, 62, 80, 0.4),
+                0 0 30px rgba(44, 62, 80, 0.2);
+  }
+}
+
+/* Sector icon animations */
+.sector-icon {
+  transition: all 0.5s ease-in-out;
+}
+
+.sector-card:hover .sector-icon {
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+/* Card shadow transitions */
+.shadow-transition {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.shadow-transition:hover {
+  box-shadow: 0 10px 30px -5px rgba(44, 62, 80, 0.15);
+}
+
+/* Button hover effects */
+.btn-primary {
+  background-color: var(--accent-1);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-1-dark);
+  transform: translateY(-2px);
+}
+
+/* Gradient text effect */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Section backgrounds */
+.section-alt {
+  background-color: var(--background-alt);
+}
+
+/* Card hover transitions */
+.card-hover {
+  transition: all 0.3s ease-in-out;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px -5px rgba(44, 62, 80, 0.2);
+  border-color: var(--accent-2);
+}
+
+/* Hero section background overlay */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  pointer-events: none;
+}
