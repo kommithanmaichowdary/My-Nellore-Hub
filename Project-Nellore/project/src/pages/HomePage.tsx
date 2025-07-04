@@ -11,11 +11,17 @@ import cityNightBackground from '../assets/pexels-photo-2341830.jpeg';
 
 const HomePage: React.FC = () => {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { user, isLoggingOut } = useAuth();
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [exiting, setExiting] = useState(false);
+  const [showLogoutMsg, setShowLogoutMsg] = useState(false);
+  const [logoutExiting, setLogoutExiting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<typeof sectors>([]);
   const navigate = useNavigate();
   const categoriesRef = useRef<HTMLDivElement>(null);
+  const prevUserRef = useRef(user);
+  const justLoggedOut = useRef(false);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -77,6 +83,58 @@ const HomePage: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (prevUserRef.current && !user) {
+      // User just logged out
+      justLoggedOut.current = true;
+      setShowLogoutMsg(true);
+      setLogoutExiting(false);
+      setShowWelcome(false); // Suppress welcome message
+      const timer = setTimeout(() => {
+        setLogoutExiting(true);
+        setTimeout(() => setShowLogoutMsg(false), 500);
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else if (!prevUserRef.current && user) {
+      // User just logged in
+      justLoggedOut.current = false;
+    }
+    prevUserRef.current = user;
+  }, [user]);
+
+  useEffect(() => {
+    if (user && !justLoggedOut.current) {
+      setShowWelcome(true);
+      setExiting(false);
+      const timer = setTimeout(() => {
+        setExiting(true);
+        setTimeout(() => setShowWelcome(false), 500); // match animation duration
+      }, 3000);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (showLogoutMsg) {
+      setLogoutExiting(false);
+      const timer1 = setTimeout(() => {
+        setLogoutExiting(true);
+        const timer2 = setTimeout(() => setShowLogoutMsg(false), 500);
+        return () => clearTimeout(timer2);
+      }, 3000);
+      return () => clearTimeout(timer1);
+    }
+  }, [showLogoutMsg]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('showLogoutMsg') === 'true') {
+      setShowLogoutMsg(true);
+      sessionStorage.removeItem('showLogoutMsg');
+    }
+  }, []);
+
   const stats = [
     { icon: Star, label: 'Verified Businesses', value: '500+' },
     { icon: Users, label: 'Happy Customers', value: '10K+' },
@@ -92,9 +150,21 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background-dark transition-colors duration-500">
       {/* Welcome Message */}
-      {user && (
-        <div className="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded mb-4 max-w-2xl mx-auto mt-4 text-center text-lg font-semibold shadow">
+      {user && showWelcome && !isLoggingOut && (
+        <div
+          className={`absolute top-10 left-1/2 -translate-x-1/2 z-30 bg-green-100 border border-green-300 text-green-800 px-6 py-4 rounded text-lg font-semibold shadow transition-all duration-500 ${exiting ? 'welcome-exit' : ''}`}
+          style={{ minWidth: '300px', maxWidth: '90vw' }}
+        >
           Welcome, {user.name || user.email}!
+        </div>
+      )}
+      {/* Logout Message */}
+      {showLogoutMsg && (
+        <div
+          className={`absolute top-10 left-1/2 -translate-x-1/2 z-30 bg-green-100 border border-green-300 text-green-800 px-6 py-4 rounded text-lg font-semibold shadow transition-all duration-500 ${logoutExiting ? 'welcome-exit' : ''}`}
+          style={{ minWidth: '300px', maxWidth: '90vw' }}
+        >
+          Logout successfully
         </div>
       )}
       {/* Hero Section */}

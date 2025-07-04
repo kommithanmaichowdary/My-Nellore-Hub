@@ -76,9 +76,9 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<?> logout(HttpServletRequest request) {
         request.getSession().invalidate();
-        response.sendRedirect("http://localhost:5173/");
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/test-create-user")
