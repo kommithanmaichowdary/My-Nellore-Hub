@@ -289,18 +289,3 @@ html {
   );
   pointer-events: none;
 }
-
-@keyframes slideRightFade {
-  from {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(40px);
-  }
-}
-
-.welcome-exit {
-  animation: slideRightFade 0.5s forwards;
-}

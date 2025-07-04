@@ -7,7 +7,7 @@ import ThemeToggle from '../UI/ThemeToggle';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, user, logout, setIsLoggingOut } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   // Debug print
   console.log('user:', user, 'isAuthenticated:', isAuthenticated);
   const { t, language, setLanguage } = useLanguage();
@@ -33,14 +33,6 @@ const Navbar: React.FC = () => {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [profileMenuOpen]);
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    await logout();
-    navigate('/');
-    sessionStorage.setItem('showLogoutMsg', 'true');
-    window.location.reload();
-  };
 
   return (
     <nav className="bg-headerfooter-light dark:bg-headerfooter-dark border-b border-border-light dark:border-border-dark shadow-lg transition-colors duration-500">
@@ -96,7 +88,7 @@ const Navbar: React.FC = () => {
                       </Link>
                     )}
                     <button
-                      onClick={handleLogout}
+                      onClick={() => { logout(); window.location.href = '/'; }}
                       className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark border border-primary-light dark:border-primary-dark rounded-md hover:bg-primary-light hover:text-white dark:hover:bg-primary-dark dark:hover:text-white transition-colors duration-200 mt-1"
                     >
                       {t('nav.logout')}
@@ -187,7 +179,7 @@ const Navbar: React.FC = () => {
                     </Link>
                   )}
                   <button
-                    onClick={handleLogout}
+                    onClick={() => { logout(); window.location.href = '/'; }}
                     className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark border border-primary-light dark:border-primary-dark rounded-md hover:bg-primary-light hover:text-white dark:hover:bg-primary-dark dark:hover:text-white transition-colors duration-200 mt-1"
                   >
                     {t('nav.logout')}

@@ -8,8 +8,6 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
-  isLoggingOut: boolean;
-  setIsLoggingOut: (val: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,7 +26,6 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Fetch current user from backend on mount
   useEffect(() => {
@@ -102,16 +99,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     throw new Error('Registration is handled via Google login.');
   };
 
-  const logout = async () => {
-    setIsLoggingOut(true);
-    await fetch('http://localhost:8080/api/logout', {
+  const logout = () => {
+    fetch('http://localhost:8080/api/logout', {
       method: 'GET',
       credentials: 'include',
+    }).then(() => {
+      setUser(null);
+      window.location.href = '/';
     });
-    setUser(null);
-    localStorage.removeItem('user');
-    setIsLoggingOut(false);
-    console.log('User after logout:', null);
   };
 
   const value: AuthContextType = {
@@ -120,9 +115,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     isAuthenticated: !!user,
-    isAdmin: user?.role === 'ADMIN',
-    isLoggingOut,
-    setIsLoggingOut
+    isAdmin: user?.role === 'ADMIN'
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
