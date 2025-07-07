@@ -36,6 +36,8 @@ public class SecurityConfig {
             .csrf().disable()
             .authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/api/save-user").permitAll()
+                .requestMatchers("/api/users").permitAll()
+                .requestMatchers("/api/businesses**").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2

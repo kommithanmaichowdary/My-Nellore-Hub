@@ -80,13 +80,13 @@ const AdminPage: React.FC = () => {
         Logout
       </button>
       <h2 className="text-xl font-semibold mb-4">Registered Users</h2>
+      <div className="mb-2 text-gray-700">Total Registered Users: {users.length}</div>
       <table className="min-w-[400px] bg-white shadow rounded mb-12">
         <thead>
           <tr>
             <th className="px-4 py-2">ID</th>
-            <th className="px-4 py-2">Full Name</th>
+            <th className="px-4 py-2">Name</th>
             <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">Role</th>
           </tr>
         </thead>
         <tbody>
@@ -95,7 +95,6 @@ const AdminPage: React.FC = () => {
               <td className="border px-4 py-2">{user.id}</td>
               <td className="border px-4 py-2">{user.fullName}</td>
               <td className="border px-4 py-2">{user.email}</td>
-              <td className="border px-4 py-2">{user.role || 'USER'}</td>
             </tr>
           ))}
         </tbody>
