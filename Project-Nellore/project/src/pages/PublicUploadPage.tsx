@@ -10,6 +10,7 @@ const businessTypes = [
   'Jewelry',
   'Education',
   'Medical',
+  'Shopping Malls',
   'Other'
 ];
 
@@ -17,7 +18,7 @@ const PublicUploadPage: React.FC = () => {
   const { t } = useLanguage();
   const { isAuthenticated, user } = useAuth();
   const [formData, setFormData] = useState({
-    fullName: user?.fullName || user?.name || '',
+    fullName: user?.name || '',
     email: user?.email || '',
     phone: '',
     businessName: '',
@@ -35,7 +36,7 @@ const PublicUploadPage: React.FC = () => {
   useEffect(() => {
     setFormData(prev => ({
       ...prev,
-      fullName: user?.fullName || user?.name || '',
+      fullName: user?.name || '',
       email: user?.email || ''
     }));
   }, [user]);

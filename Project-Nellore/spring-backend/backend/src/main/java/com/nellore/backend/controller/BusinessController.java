@@ -22,7 +22,7 @@ public class BusinessController {
     @GetMapping("/businesses")
     public List<Business> getBusinesses(@RequestParam(value = "status", required = false) String status) {
         if (status != null) {
-            return businessService.getPendingBusinesses();
+            return businessService.getBusinessesByStatus(status);
         }
         return businessService.getAllBusinesses();
     }

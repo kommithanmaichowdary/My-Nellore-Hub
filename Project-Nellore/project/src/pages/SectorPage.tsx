@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Search, Filter, Star, MapPin, Phone, Clock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -12,19 +12,59 @@ const SectorPage: React.FC = () => {
   const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [ratingFilter, setRatingFilter] = useState<number>(0);
+  const [approvedBusinesses, setApprovedBusinesses] = useState([]);
 
   const sector = sectors.find(s => s.id === sectorId);
   
+  useEffect(() => {
+    fetch('http://localhost:8080/api/businesses?status=APPROVED')
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.map((biz: any) => ({
+          ...biz,
+          name: biz.businessName || 'Unnamed',
+          sector: biz.businessType || 'other',
+          description: biz.services || 'No description',
+          address: biz.address || 'No address',
+          phone: biz.phone || 'No phone',
+          timings: biz.timings || 'Morning 9:00 to Night 8:00pm',
+          image: biz.imageUrl || '',
+          averageRating: biz.averageRating || 0,
+          totalReviews: biz.totalReviews || 0,
+          status: biz.status || 'APPROVED',
+          createdAt: biz.createdAt || new Date().toISOString(),
+        }));
+        setApprovedBusinesses(mapped);
+        // Debug log
+        console.log('Mapped approved businesses:', mapped);
+      });
+  }, []);
+
+  const allBusinesses = [...mockBusinesses, ...approvedBusinesses];
+
+  // Debug log for allBusinesses and sectorId
+  useEffect(() => {
+    console.log('allBusinesses:', allBusinesses);
+    console.log('sectorId:', sectorId);
+  }, [allBusinesses, sectorId]);
+
   const filteredBusinesses = useMemo(() => {
-    return mockBusinesses.filter(business => {
-      const matchesSector = business.sector === sectorId;
-      const matchesSearch = business.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           business.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const normalize = (str: string | undefined) =>
+      str ? str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : '';
+    const result = allBusinesses.filter(business => {
+      const matchesSector = normalize(business.sector) === sectorId;
+      const matchesSearch = business.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           business.description?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesRating = ratingFilter === 0 || business.averageRating >= ratingFilter;
-      
-      return matchesSector && matchesSearch && matchesRating && business.status === 'APPROVED';
+      const isApproved = business.status ? business.status === 'APPROVED' : true;
+      if (matchesSector && isApproved) {
+        console.log('Business passing filter:', business, 'sectorId:', sectorId);
+      }
+      return matchesSector && matchesSearch && matchesRating && isApproved;
     });
-  }, [sectorId, searchTerm, ratingFilter]);
+    console.log('filteredBusinesses:', result);
+    return result;
+  }, [allBusinesses, sectorId, searchTerm, ratingFilter]);
 
   if (!sector) {
     return (

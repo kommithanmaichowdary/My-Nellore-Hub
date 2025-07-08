@@ -45,4 +45,8 @@ public class BusinessService {
         }
         throw new RuntimeException("Business not found");
     }
+
+    public List<Business> getBusinessesByStatus(String status) {
+        return businessRepository.findByStatus(status);
+    }
 } 
