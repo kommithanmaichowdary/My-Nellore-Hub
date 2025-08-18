@@ -26,6 +26,14 @@ public class BusinessService {
         return businessRepository.findAll();
     }
 
+    public Business getBusiness(Long id) {
+        Optional<Business> businessOpt = businessRepository.findById(id);
+        if (businessOpt.isPresent()) {
+            return businessOpt.get();
+        }
+        throw new RuntimeException("Business not found");
+    }
+
     public Business approveBusiness(Long id) {
         Optional<Business> businessOpt = businessRepository.findById(id);
         if (businessOpt.isPresent()) {

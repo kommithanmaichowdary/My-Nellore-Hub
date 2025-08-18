@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"})
 @RestController
 @RequestMapping("/api")
 public class BusinessController {
@@ -25,6 +25,11 @@ public class BusinessController {
             return businessService.getBusinessesByStatus(status);
         }
         return businessService.getAllBusinesses();
+    }
+
+    @GetMapping("/businesses/{id}")
+    public Business getBusiness(@PathVariable Long id) {
+        return businessService.getBusiness(id);
     }
 
     @PutMapping("/businesses/{id}/approve")

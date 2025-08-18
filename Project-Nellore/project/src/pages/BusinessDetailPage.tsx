@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { MapPin, Phone, Clock, Star, User, Calendar } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { mockBusinesses, mockReviews } from '../data/mockData';
 import StarRating from '../components/UI/StarRating';
+
+interface Review {
+  id: string;
+  businessId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
 
 const BusinessDetailPage: React.FC = () => {
   const { businessId } = useParams<{ businessId: string }>();
@@ -13,16 +22,121 @@ const BusinessDetailPage: React.FC = () => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState('');
+  const [business, setBusiness] = useState<any | null>(null);
+  const [businessReviews, setBusinessReviews] = useState<Review[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const business = mockBusinesses.find(b => b.id === businessId);
-  const businessReviews = mockReviews.filter(r => r.businessId === businessId);
+  useEffect(() => {
+    const loadBusiness = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/api/businesses/${businessId}`);
+        if (res.ok) {
+          const biz = await res.json();
+          const mapped = {
+            id: String(biz.id),
+            name: biz.businessName || 'Unnamed',
+            sector: biz.businessType || 'other',
+            description: biz.services || 'No description',
+            address: biz.address || 'No address',
+            phone: biz.phone || 'No phone',
+            timings: biz.timings || 'Morning 9:00 to Night 8:00pm',
+            image: biz.imageUrl || '',
+            averageRating: biz.averageRating || 0,
+            totalReviews: biz.totalReviews || 0,
+            status: biz.status || 'APPROVED',
+            createdAt: biz.createdAt || new Date().toISOString(),
+          };
+          setBusiness(mapped);
+        } else {
+          const fallback = mockBusinesses.find(b => b.id === businessId) || null;
+          setBusiness(fallback);
+        }
+      } catch (error) {
+        const fallback = mockBusinesses.find(b => b.id === businessId) || null;
+        setBusiness(fallback);
+      }
+    };
 
-  const handleSubmitReview = () => {
-    // In production, this would submit to your backend
-    console.log('Submitting review:', { rating: reviewRating, text: reviewText });
-    setIsReviewModalOpen(false);
-    setReviewRating(5);
-    setReviewText('');
+    const loadReviews = async () => {
+      try {
+        const res = await fetch(`http://localhost:8080/api/businesses/${businessId}/reviews`);
+        if (res.ok) {
+          const reviews = await res.json();
+          const mappedReviews = reviews.map((r: any) => ({
+            id: String(r.id),
+            businessId: String(r.business.id),
+            userName: r.userName || 'Anonymous',
+            rating: r.rating || 0,
+            comment: r.comment || '',
+            createdAt: r.createdAt || new Date().toISOString(),
+          }));
+          setBusinessReviews(mappedReviews);
+        } else {
+          setBusinessReviews(mockReviews.filter(r => r.businessId === businessId));
+        }
+      } catch (error) {
+        setBusinessReviews(mockReviews.filter(r => r.businessId === businessId));
+      }
+    };
+
+    if (businessId) {
+      loadBusiness();
+      loadReviews();
+    }
+  }, [businessId]);
+
+  const handleSubmitReview = async () => {
+    if (!business || !user) return;
+    
+    setIsSubmitting(true);
+    try {
+      const reviewData = {
+        business: { id: parseInt(businessId!) },
+        userName: user.name || user.email || 'Anonymous',
+        userEmail: user.email || '',
+        rating: reviewRating,
+        comment: reviewText
+      };
+
+      const response = await fetch('http://localhost:8080/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewData)
+      });
+
+      if (response.ok) {
+        const newReview = await response.json();
+        const mappedReview = {
+          id: String(newReview.id),
+          businessId: businessId!,
+          userName: newReview.userName || 'Anonymous',
+          rating: newReview.rating || 0,
+          comment: newReview.comment || '',
+          createdAt: newReview.createdAt || new Date().toISOString(),
+        };
+        
+        setBusinessReviews(prev => [mappedReview, ...prev]);
+        
+        // Refresh business data to get updated rating
+        const businessRes = await fetch(`http://localhost:8080/api/businesses/${businessId}`);
+        if (businessRes.ok) {
+          const updatedBiz = await businessRes.json();
+          setBusiness((prev: any) => prev ? {
+            ...prev,
+            averageRating: updatedBiz.averageRating || 0,
+            totalReviews: updatedBiz.totalReviews || 0
+          } : null);
+        }
+        
+        setIsReviewModalOpen(false);
+        setReviewRating(5);
+        setReviewText('');
+      }
+    } catch (error) {
+      console.error('Failed to submit review:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!business) {
@@ -258,9 +372,10 @@ const BusinessDetailPage: React.FC = () => {
               </button>
               <button
                 onClick={handleSubmitReview}
-                className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                disabled={isSubmitting}
+                className="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
               >
-                {t('business.submitReview')}
+                {isSubmitting ? 'Submitting...' : t('business.submitReview')}
               </button>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Star } from 'lucide-react';
 import { mockBusinesses } from '../../data/mockData';
@@ -11,15 +11,48 @@ const Hospitals: React.FC = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
 
+  const [approved, setApproved] = useState<any[]>([]);
+
+  const refreshBusinesses = () => {
+    fetch('http://localhost:8080/api/businesses?status=APPROVED')
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.map((biz: any) => ({
+          id: String(biz.id),
+          name: biz.businessName || 'Unnamed',
+          sector: biz.businessType || 'other',
+          description: biz.services || 'No description',
+          address: biz.address || 'No address',
+          phone: biz.phone || 'No phone',
+          timings: biz.timings || 'Morning 9:00 to Night 8:00pm',
+          image: biz.imageUrl || '',
+          averageRating: biz.averageRating || 0,
+          totalReviews: biz.totalReviews || 0,
+          status: biz.status || 'APPROVED',
+          createdAt: biz.createdAt || new Date().toISOString(),
+        }));
+        setApproved(mapped);
+      })
+      .catch(() => setApproved([]));
+  };
+
+  useEffect(() => {
+    refreshBusinesses();
+  }, []);
+
+  const allHospitals = useMemo(() => {
+    return [...mockBusinesses, ...approved];
+  }, [approved]);
+
   const filteredHospitals = useMemo(() => {
-    return mockBusinesses.filter(hospital => {
-      if (hospital.sector !== 'hospitals') return false;
-      const matchesSearch = hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          hospital.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesRating = ratingFilter === 0 || hospital.averageRating >= ratingFilter;
+    return allHospitals.filter(hospital => {
+      if ((hospital.sector || '').toLowerCase() !== 'hospitals') return false;
+      const matchesSearch = (hospital.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (hospital.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesRating = ratingFilter === 0 || (hospital.averageRating || 0) >= ratingFilter;
       return matchesSearch && matchesRating;
     });
-  }, [searchTerm, ratingFilter]);
+  }, [allHospitals, searchTerm, ratingFilter]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background-dark transition-colors duration-500">

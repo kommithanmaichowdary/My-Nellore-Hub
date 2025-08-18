@@ -17,7 +17,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
             src={business.image || 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80'}
             alt={business.name}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80'; }}
+            onError={(e) => { (e as any).currentTarget.onerror = null; (e as any).currentTarget.src = 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80'; }}
           />
           <div className="absolute top-3 right-3 bg-white dark:bg-card-dark rounded-full px-2 py-1 shadow-md">
             <div className="flex items-center space-x-1">

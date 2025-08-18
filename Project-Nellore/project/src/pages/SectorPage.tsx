@@ -14,9 +14,7 @@ const SectorPage: React.FC = () => {
   const [ratingFilter, setRatingFilter] = useState<number>(0);
   const [approvedBusinesses, setApprovedBusinesses] = useState([]);
 
-  const sector = sectors.find(s => s.id === sectorId);
-  
-  useEffect(() => {
+  const refreshBusinesses = () => {
     fetch('http://localhost:8080/api/businesses?status=APPROVED')
       .then(res => res.json())
       .then(data => {
@@ -38,8 +36,14 @@ const SectorPage: React.FC = () => {
         // Debug log
         console.log('Mapped approved businesses:', mapped);
       });
+  };
+
+  useEffect(() => {
+    refreshBusinesses();
   }, []);
 
+  const sector = sectors.find(s => s.id === sectorId);
+  
   const allBusinesses = [...mockBusinesses, ...approvedBusinesses];
 
   // Debug log for allBusinesses and sectorId

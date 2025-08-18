@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Star, MapPin, Clock, Filter } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
+import BusinessCard from '../Business/BusinessCard';
 import { restaurants, restaurantCategories, restaurantCollections } from '../../data/mockData';
 import * as LucideIcons from 'lucide-react';
 
@@ -15,7 +16,41 @@ const Restaurants: React.FC = () => {
     return IconComponent ? <IconComponent className="w-6 h-6" /> : null;
   };
 
-  const filteredRestaurants = restaurants.filter(restaurant => {
+  const [approved, setApproved] = useState<any[]>([]);
+
+  const refreshBusinesses = () => {
+    fetch('http://localhost:8080/api/businesses?status=APPROVED')
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.map((biz: any) => ({
+          id: String(biz.id),
+          name: biz.businessName || 'Unnamed',
+          sector: biz.businessType || 'other',
+          category: '',
+          description: biz.services || 'No description',
+          address: biz.address || 'No address',
+          phone: biz.phone || 'No phone',
+          timings: biz.timings || 'Morning 9:00 to Night 8:00pm',
+          image: biz.imageUrl || '',
+          averageRating: biz.averageRating || 0,
+          totalReviews: biz.totalReviews || 0,
+          status: biz.status || 'APPROVED',
+          createdAt: biz.createdAt || new Date().toISOString(),
+        }));
+        setApproved(mapped);
+      })
+      .catch(() => setApproved([]));
+  };
+
+  useEffect(() => {
+    refreshBusinesses();
+  }, []);
+
+  const mergedRestaurants = useMemo(() => {
+    return [...restaurants, ...approved].filter(r => (r.sector || '').toLowerCase() === 'restaurants');
+  }, [approved]);
+
+  const filteredRestaurants = mergedRestaurants.filter(restaurant => {
     const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          restaurant.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || restaurant.category === selectedCategory;
@@ -101,53 +136,7 @@ const Restaurants: React.FC = () => {
           {/* Restaurant List */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredRestaurants.map((restaurant) => (
-              <div
-                key={restaurant.id}
-                onClick={() => handleRestaurantClick(restaurant.id)}
-                className="group bg-white dark:bg-card-dark rounded-2xl shadow-md dark:shadow-glow-dark hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-200 dark:border-border-dark hover:border-amber-500 dark:hover:border-accent-darkAlt cursor-pointer"
-              >
-                <div className="relative h-48">
-                  <img
-                    src={restaurant.image}
-                    alt={restaurant.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                  />
-                </div>
-                <div className="p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-text-primaryDark">
-                      {restaurant.name}
-                    </h3>
-                    <div className="flex items-center bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded">
-                      <span className="text-green-700 dark:text-green-400 font-medium mr-1">
-                        {restaurant.averageRating}
-                      </span>
-                      <Star className="w-4 h-4 text-green-700 dark:text-green-400" />
-                    </div>
-                  </div>
-                  <p className="text-gray-600 dark:text-text-secondaryDark text-sm mb-3">
-                    {restaurant.cuisine.join(' • ')}
-                  </p>
-                  <div className="flex items-center text-gray-500 dark:text-text-secondaryDark text-sm mb-2">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {restaurant.address}
-                  </div>
-                  <div className="flex items-center text-gray-500 dark:text-text-secondaryDark text-sm">
-                    <Clock className="w-4 h-4 mr-1" />
-                    {restaurant.timings}
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {restaurant.features.map((feature, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-background-darkAlt rounded-full"
-                      >
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <BusinessCard key={restaurant.id} business={restaurant as any} />
             ))}
           </div>
         </div>

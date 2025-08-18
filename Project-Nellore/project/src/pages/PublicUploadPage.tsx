@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Building2, AlertCircle, CheckCircle, Camera } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Building2, AlertCircle, CheckCircle } from 'lucide-react';
+// import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
+import { sectors } from '../data/mockData';
 
-const businessTypes = [
-  'Clothing',
-  'Electronics',
-  'Food',
-  'Jewelry',
-  'Education',
-  'Medical',
-  'Shopping Malls',
-  'Other'
-];
+// Use app sectors to ensure submitted business maps to the correct sector pages
+const sectorOptions = sectors.map(s => ({ id: s.id, name: s.name }));
 
 const PublicUploadPage: React.FC = () => {
-  const { t } = useLanguage();
+  // const { t } = useLanguage();
   const { isAuthenticated, user } = useAuth();
   const [formData, setFormData] = useState({
     fullName: user?.name || '',
@@ -25,9 +18,11 @@ const PublicUploadPage: React.FC = () => {
     businessType: '',
     services: '',
     address: '',
-    image: null as File | null
+    timings: '',
+    imageUrl: ''
   });
-  const [previewImage, setPreviewImage] = useState<string>('');
+  // Preview not currently used
+  // const [previewImage, setPreviewImage] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,29 +46,18 @@ const PublicUploadPage: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData(prev => ({ ...prev, image: file }));
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // Image upload is not wired to backend storage yet
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
-    // Prepare data for backend
-    const payload = {
-      ...formData,
-      imageUrl: '', // Skipping image upload for now
-      submittedBy: user?.email || ''
-    };
+  // Prepare data for backend
+  const payload = {
+    ...formData,
+    submittedBy: user?.email || ''
+  };
 
     try {
       const response = await fetch('http://localhost:8080/api/businesses', {
@@ -246,7 +230,7 @@ const PublicUploadPage: React.FC = () => {
 
             <div className="mt-6">
               <label htmlFor="businessType" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
-                Type of Business *
+                Sector *
               </label>
               <select
                 id="businessType"
@@ -256,10 +240,10 @@ const PublicUploadPage: React.FC = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent text-text-primaryLight dark:text-text-primaryDark"
               >
-                <option value="" disabled>Select business type</option>
-                {businessTypes.map(type => (
-                  <option key={type} value={type}>
-                    {type}
+                <option value="" disabled>Select sector</option>
+                {sectorOptions.map(opt => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.name}
                   </option>
                 ))}
               </select>
@@ -293,6 +277,38 @@ const PublicUploadPage: React.FC = () => {
                 className="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent text-text-primaryLight dark:text-text-primaryDark placeholder-text-secondaryLight dark:placeholder-text-secondaryDark transition-colors duration-500"
                 placeholder="Enter your business address"
               />
+            </div>
+
+            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label htmlFor="timings" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
+                  Business Timings
+                </label>
+                <input
+                  type="text"
+                  id="timings"
+                  name="timings"
+                  value={formData.timings}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent text-text-primaryLight dark:text-text-primaryDark placeholder-text-secondaryLight dark:placeholder-text-secondaryDark transition-colors duration-500"
+                  placeholder="e.g., 10:00 AM - 9:00 PM"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="imageUrl" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
+                  Image/Logo URL
+                </label>
+                <input
+                  type="url"
+                  id="imageUrl"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent text-text-primaryLight dark:text-text-primaryDark placeholder-text-secondaryLight dark:placeholder-text-secondaryDark transition-colors duration-500"
+                  placeholder="https://example.com/logo.jpg"
+                />
+              </div>
             </div>
 
             <div className="mt-8 flex justify-center">

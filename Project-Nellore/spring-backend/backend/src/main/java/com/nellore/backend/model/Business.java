@@ -17,7 +17,10 @@ public class Business {
     private String services;
     private String address;
     private String imageUrl;
+    private String timings;
     private String status = "PENDING";
+    private Double averageRating = 0.0;
+    private Integer totalReviews = 0;
     private LocalDateTime createdAt = LocalDateTime.now();
     private String submittedBy;
 
@@ -40,8 +43,14 @@ public class Business {
     public void setAddress(String address) { this.address = address; }
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public String getTimings() { return timings; }
+    public void setTimings(String timings) { this.timings = timings; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public Double getAverageRating() { return averageRating; }
+    public void setAverageRating(Double averageRating) { this.averageRating = averageRating; }
+    public Integer getTotalReviews() { return totalReviews; }
+    public void setTotalReviews(Integer totalReviews) { this.totalReviews = totalReviews; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public String getSubmittedBy() { return submittedBy; }
