@@ -10,6 +10,7 @@ interface Review {
   id: string;
   businessId: string;
   userName: string;
+  userEmail?: string;
   rating: number;
   comment: string;
   createdAt: string;
@@ -25,6 +26,7 @@ const BusinessDetailPage: React.FC = () => {
   const [business, setBusiness] = useState<any | null>(null);
   const [businessReviews, setBusinessReviews] = useState<Review[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const loadBusiness = async () => {
@@ -66,6 +68,7 @@ const BusinessDetailPage: React.FC = () => {
             id: String(r.id),
             businessId: String(r.business.id),
             userName: r.userName || 'Anonymous',
+            userEmail: r.userEmail || '',
             rating: r.rating || 0,
             comment: r.comment || '',
             createdAt: r.createdAt || new Date().toISOString(),
@@ -85,9 +88,13 @@ const BusinessDetailPage: React.FC = () => {
     }
   }, [businessId]);
 
+  const hasUserReviewed = isAuthenticated && user?.email
+    ? businessReviews.some(r => r.userEmail === user.email)
+    : false;
+
   const handleSubmitReview = async () => {
     if (!business || !user) return;
-    
+    setErrorMessage(null);
     setIsSubmitting(true);
     try {
       const reviewData = {
@@ -110,14 +117,14 @@ const BusinessDetailPage: React.FC = () => {
           id: String(newReview.id),
           businessId: businessId!,
           userName: newReview.userName || 'Anonymous',
+          userEmail: newReview.userEmail || '',
           rating: newReview.rating || 0,
           comment: newReview.comment || '',
           createdAt: newReview.createdAt || new Date().toISOString(),
-        };
+        } as Review;
         
         setBusinessReviews(prev => [mappedReview, ...prev]);
         
-        // Refresh business data to get updated rating
         const businessRes = await fetch(`http://localhost:8080/api/businesses/${businessId}`);
         if (businessRes.ok) {
           const updatedBiz = await businessRes.json();
@@ -131,9 +138,17 @@ const BusinessDetailPage: React.FC = () => {
         setIsReviewModalOpen(false);
         setReviewRating(5);
         setReviewText('');
+      } else if (response.status === 409) {
+        const text = await response.text();
+        setErrorMessage(text || 'You have already submitted a review for this business.');
+      } else if (response.status === 400) {
+        const text = await response.text();
+        setErrorMessage(text || 'Invalid review data.');
+      } else {
+        setErrorMessage('Failed to submit review. Please try again.');
       }
     } catch (error) {
-      console.error('Failed to submit review:', error);
+      setErrorMessage('Failed to submit review. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -232,9 +247,10 @@ const BusinessDetailPage: React.FC = () => {
               {isAuthenticated ? (
                   <button
                     onClick={() => setIsReviewModalOpen(true)}
-                    className="bg-secondary-light text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    disabled={hasUserReviewed}
+                    className="bg-secondary-light text-white font-bold py-3 px-8 rounded-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50"
                   >
-                    {t('business.submitReview')}
+                    {hasUserReviewed ? 'Already reviewed' : t('business.submitReview')}
                   </button>
                 ) : (
                   <div className="text-center p-4 border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600">
@@ -254,6 +270,12 @@ const BusinessDetailPage: React.FC = () => {
                   {t('business.allReviews')}
                 </h2>
               </div>
+
+              {errorMessage && (
+                <div className="mb-4 p-3 rounded bg-red-50 text-red-700 border border-red-200">
+                  {errorMessage}
+                </div>
+              )}
 
               <div className="space-y-4">
                 {businessReviews.length === 0 ? (
