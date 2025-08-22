@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 	List<Review> findByBusinessIdOrderByCreatedAtDesc(Long businessId);
+	List<Review> findByBusiness_BusinessTypeOrderByCreatedAtDesc(String businessType);
+	List<Review> findAllByOrderByCreatedAtDesc();
 	
 	@Query("SELECT AVG(r.rating) FROM Review r WHERE r.business.id = :businessId")
 	Double getAverageRatingByBusinessId(@Param("businessId") Long businessId);
@@ -16,5 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 	Long getReviewCountByBusinessId(@Param("businessId") Long businessId);
 	
 	boolean existsByBusinessIdAndUserEmail(Long businessId, String userEmail);
+
+	void deleteByBusinessId(Long businessId);
 }
 

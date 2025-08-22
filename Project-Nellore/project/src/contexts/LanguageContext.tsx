@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 interface LanguageContextType {
   language: 'en' | 'te';
@@ -230,7 +230,23 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<'en' | 'te'>('en');
+  const [language, setLanguageState] = useState<'en' | 'te'>(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('language') : null;
+    return (saved === 'te' || saved === 'en') ? saved : 'en';
+  });
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('lang', language);
+    }
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('language', language);
+    }
+  }, [language]);
+
+  const setLanguage = (lang: 'en' | 'te') => {
+    setLanguageState(lang);
+  };
 
   const t = (key: string): string => {
     return translations[language][key as keyof typeof translations['en']] || key;

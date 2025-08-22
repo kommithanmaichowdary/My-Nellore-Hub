@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface BusinessRepository extends JpaRepository<Business, Long> {
     List<Business> findByStatus(String status);
+    List<Business> findByBusinessType(String businessType);
+    List<Business> findByBusinessTypeAndStatus(String businessType, String status);
 } 

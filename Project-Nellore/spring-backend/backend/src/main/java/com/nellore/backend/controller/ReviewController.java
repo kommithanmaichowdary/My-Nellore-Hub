@@ -32,5 +32,24 @@ public class ReviewController {
 	public List<Review> getReviewsByBusinessId(@PathVariable Long businessId) {
 		return reviewService.getReviewsByBusinessId(businessId);
 	}
+
+	@GetMapping("/reviews")
+	public List<Review> getReviews(@RequestParam(value = "sector", required = false) String sector) {
+		if (sector != null && !sector.isBlank()) {
+			return reviewService.getReviewsBySector(sector);
+		}
+		return reviewService.getAllReviews();
+	}
+
+	@PutMapping("/reviews/{id}")
+	public Review updateReview(@PathVariable Long id, @RequestBody Review updated) {
+		return reviewService.updateReview(id, updated);
+	}
+
+	@DeleteMapping("/reviews/{id}")
+	public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
+		reviewService.deleteReview(id);
+		return ResponseEntity.noContent().build();
+	}
 }
 

@@ -43,6 +43,30 @@ public class ReviewService {
 	public List<Review> getReviewsByBusinessId(Long businessId) {
 		return reviewRepository.findByBusinessIdOrderByCreatedAtDesc(businessId);
 	}
+
+	public List<Review> getReviewsBySector(String sector) {
+		return reviewRepository.findByBusiness_BusinessTypeOrderByCreatedAtDesc(sector);
+	}
+
+	public List<Review> getAllReviews() {
+		return reviewRepository.findAllByOrderByCreatedAtDesc();
+	}
+
+	public Review updateReview(Long id, Review updated) {
+		Review existing = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
+		if (updated.getRating() != null) existing.setRating(updated.getRating());
+		if (updated.getComment() != null) existing.setComment(updated.getComment());
+		Review saved = reviewRepository.save(existing);
+		updateBusinessRating(existing.getBusiness().getId());
+		return saved;
+	}
+
+	public void deleteReview(Long id) {
+		Review existing = reviewRepository.findById(id).orElseThrow(() -> new RuntimeException("Review not found"));
+		Long businessId = existing.getBusiness().getId();
+		reviewRepository.deleteById(id);
+		updateBusinessRating(businessId);
+	}
 	
 	private void updateBusinessRating(Long businessId) {
 		Double avgRating = reviewRepository.getAverageRatingByBusinessId(businessId);

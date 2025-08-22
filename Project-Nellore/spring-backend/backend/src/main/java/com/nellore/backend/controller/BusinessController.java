@@ -20,11 +20,19 @@ public class BusinessController {
     }
 
     @GetMapping("/businesses")
-    public List<Business> getBusinesses(@RequestParam(value = "status", required = false) String status) {
-        if (status != null) {
+    public List<Business> getBusinesses(
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "type", required = false) String businessType
+    ) {
+        if (businessType != null && status != null) {
+            return businessService.getBusinessesByTypeAndStatus(businessType, status);
+        } else if (businessType != null) {
+            return businessService.getBusinessesByType(businessType);
+        } else if (status != null) {
             return businessService.getBusinessesByStatus(status);
+        } else {
+            return businessService.getAllBusinesses();
         }
-        return businessService.getAllBusinesses();
     }
 
     @GetMapping("/businesses/{id}")
@@ -40,5 +48,15 @@ public class BusinessController {
     @PutMapping("/businesses/{id}/reject")
     public Business rejectBusiness(@PathVariable Long id) {
         return businessService.rejectBusiness(id);
+    }
+
+    @PutMapping("/businesses/{id}")
+    public Business updateBusiness(@PathVariable Long id, @RequestBody Business updates) {
+        return businessService.updateBusiness(id, updates);
+    }
+
+    @DeleteMapping("/businesses/{id}")
+    public void deleteBusiness(@PathVariable Long id) {
+        businessService.deleteBusiness(id);
     }
 } 

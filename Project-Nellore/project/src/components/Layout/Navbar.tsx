@@ -14,6 +14,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const isAdminPage = location.pathname.startsWith('/admin');
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -66,60 +67,69 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center md:space-x-4">
-            {isAuthenticated ? (
-              <div className="relative">
-                <button
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light transition-colors duration-200 focus:outline-none"
-                  onClick={() => setProfileMenuOpen((open) => !open)}
-                  aria-haspopup="true"
-                  aria-expanded={profileMenuOpen}
-                >
-                  <UserCircle className="w-7 h-7 text-primary-light dark:text-primary-dark" />
-                  <span className="font-semibold">{user?.name || user?.email}</span>
-                </button>
-                {profileMenuOpen && (
-                  <div id="profile-dropdown" className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700">
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => setProfileMenuOpen(false)}
-                    >
-                      {t('nav.profile')}
-                    </Link>
-                    {user?.role === 'ADMIN' && (
+            {/* Always show profile icon; dropdown entries depend on auth */}
+            <div className="relative">
+              <button
+                className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light transition-colors duration-200 focus:outline-none"
+                onClick={() => setProfileMenuOpen((open) => !open)}
+                aria-haspopup="true"
+                aria-expanded={profileMenuOpen}
+              >
+                <UserCircle className="w-7 h-7 text-primary-light dark:text-primary-dark" />
+                {isAuthenticated && !isAdminPage && <span className="font-semibold">{user?.name || user?.email}</span>}
+              </button>
+              {profileMenuOpen && (
+                <div id="profile-dropdown" className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700">
+                  <Link
+                    to="/upload"
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => setProfileMenuOpen(false)}
+                  >
+                    {t('nav.submit')}
+                  </Link>
+                  {isAuthenticated ? (
+                    <>
+                      {!isAdminPage && (
+                        <>
+                          <Link
+                            to="/profile"
+                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={() => setProfileMenuOpen(false)}
+                          >
+                            {t('nav.profile')}
+                          </Link>
+                          {user?.role === 'ADMIN' && (
+                            <Link
+                              to="/admin"
+                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                              onClick={() => setProfileMenuOpen(false)}
+                            >
+                              {t('nav.admin')}
+                            </Link>
+                          )}
+                        </>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        {t('nav.logout')}
+                      </button>
+                    </>
+                  ) : (
+                    <>
                       <Link
-                        to="/admin"
+                        to="/login"
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                         onClick={() => setProfileMenuOpen(false)}
                       >
-                        {t('nav.admin')}
+                        {t('nav.login')}
                       </Link>
-                    )}
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark border border-primary-light dark:border-primary-dark rounded-md hover:bg-primary-light hover:text-white dark:hover:bg-primary-dark dark:hover:text-white transition-colors duration-200 mt-1"
-                    >
-                      {t('nav.logout')}
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="px-4 py-1.5 rounded-md text-sm font-semibold border-2 border-blue-900 bg-blue-900 text-white hover:bg-blue-800 hover:text-white dark:border-blue-900 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-800 dark:hover:text-white transition-colors duration-300 transform hover:scale-105 shadow-[0_0_8px_2px_rgba(30,64,175,0.5)] dark:shadow-[0_0_8px_2px_rgba(30,64,175,0.7)] focus:shadow-[0_0_12px_4px_rgba(30,64,175,0.8)] dark:focus:shadow-[0_0_12px_4px_rgba(30,64,175,1)]"
-                >
-                  {t('nav.login')}
-                </Link>
-                <a
-                  href="http://localhost:8080/oauth2/authorization/google"
-                  className="px-4 py-1.5 rounded-md text-sm font-semibold border-2 border-secondary-light dark:border-secondary-dark bg-secondary-light dark:bg-secondary-dark text-white dark:text-white hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-[0_0_8px_2px_rgba(251,191,36,0.5)] dark:shadow-[0_0_8px_2px_rgba(251,191,36,0.7)] focus:shadow-[0_0_12px_4px_rgba(251,191,36,0.8)] dark:focus:shadow-[0_0_12px_4px_rgba(251,191,36,1)]"
-                >
-                  {t('nav.register')}
-                </a>
-              </>
-            )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
 
             <ThemeToggle />
 
@@ -133,7 +143,7 @@ const Navbar: React.FC = () => {
                 EN
               </span>
               <span className="absolute inset-0 w-full h-full flex items-center justify-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                TL
+                TE
               </span>
             </button>
           </div>
@@ -157,60 +167,48 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       <div className={`${isOpen ? 'block' : 'hidden'} md:hidden bg-white dark:bg-gray-800 transition-colors duration-300`}>
         <div className="px-2 pt-2 pb-3 space-y-1">
-          {isAuthenticated ? (
-            <div className="relative">
-              <button
-                className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light transition-colors duration-200 focus:outline-none"
-                onClick={() => setProfileMenuOpen((open) => !open)}
-                aria-haspopup="true"
-                aria-expanded={profileMenuOpen}
-              >
-                <UserCircle className="w-7 h-7 text-primary-light dark:text-primary-dark" />
-                <span className="font-semibold">{user?.name || user?.email}</span>
-              </button>
-              {profileMenuOpen && (
-                <div id="profile-dropdown" className="absolute left-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700">
-                  <Link
-                    to="/profile"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => { setProfileMenuOpen(false); setIsOpen(false); }}
-                  >
-                    {t('nav.profile')}
-                  </Link>
-                  {user?.role === 'ADMIN' && (
+          <div className="relative">
+            <button
+              className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light transition-colors duration-200 focus:outline-none"
+              onClick={() => setProfileMenuOpen((open) => !open)}
+              aria-haspopup="true"
+              aria-expanded={profileMenuOpen}
+            >
+              <UserCircle className="w-7 h-7 text-primary-light dark:text-primary-dark" />
+              {isAuthenticated && !isAdminPage && <span className="font-semibold">{user?.name || user?.email}</span>}
+            </button>
+            {profileMenuOpen && (
+              <div id="profile-dropdown" className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700">
+                <Link
+                  to="/upload"
+                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => { setProfileMenuOpen(false); setIsOpen(false); }}
+                >
+                  {t('nav.submit')}
+                </Link>
+                {isAuthenticated ? (
+                  <>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      {t('nav.logout')}
+                    </button>
+                  </>
+                ) : (
+                  <>
                     <Link
-                      to="/admin"
+                      to="/login"
                       className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={() => { setProfileMenuOpen(false); setIsOpen(false); }}
                     >
-                      {t('nav.admin')}
+                      {t('nav.login')}
                     </Link>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark border border-primary-light dark:border-primary-dark rounded-md hover:bg-primary-light hover:text-white dark:hover:bg-primary-dark dark:hover:text-white transition-colors duration-200 mt-1"
-                  >
-                    {t('nav.logout')}
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="block text-center px-4 py-1.5 rounded-md text-sm font-semibold border-2 border-blue-900 bg-blue-900 text-white hover:bg-blue-800 hover:text-white dark:border-blue-900 dark:bg-blue-900 dark:text-white dark:hover:bg-blue-800 dark:hover:text-white transition-colors duration-300 transform hover:scale-105 shadow-[0_0_8px_2px_rgba(30,64,175,0.5)] dark:shadow-[0_0_8px_2px_rgba(30,64,175,0.7)] focus:shadow-[0_0_12px_4px_rgba(30,64,175,0.8)] dark:focus:shadow-[0_0_12px_4px_rgba(30,64,175,1)]"
-              >
-                {t('nav.login')}
-              </Link>
-              <a
-                href="http://localhost:8080/oauth2/authorization/google"
-                className="block text-center px-4 py-1.5 rounded-md text-sm font-semibold border-2 border-secondary-light dark:border-secondary-dark bg-secondary-light dark:bg-secondary-dark text-white dark:text-white hover:opacity-90 transition-all duration-300 transform hover:scale-105 shadow-[0_0_8px_2px_rgba(251,191,36,0.5)] dark:shadow-[0_0_8px_2px_rgba(251,191,36,0.7)] focus:shadow-[0_0_12px_4px_rgba(251,191,36,0.8)] dark:focus:shadow-[0_0_12px_4px_rgba(251,191,36,1)]"
-              >
-                {t('nav.register')}
-              </a>
-            </>
-          )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Language Toggle Button for Mobile */}
@@ -225,7 +223,7 @@ const Navbar: React.FC = () => {
                 EN
             </span>
             <span className="absolute inset-0 w-full h-full flex items-center justify-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                TL
+                TE
             </span>
           </button>
         </div>
