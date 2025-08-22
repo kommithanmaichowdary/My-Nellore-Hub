@@ -52,7 +52,7 @@ npm run dev           # Start development server
 ```sh
 cd spring-backend/backend
 ./mvnw spring-boot:run      # On Linux/Mac
-mvnw.cmd spring-boot:run    # On Windows
+mvn spring-boot:run    # On Windows
 ```
 
 - The backend will run on [http://localhost:8080](http://localhost:8080) by default.
