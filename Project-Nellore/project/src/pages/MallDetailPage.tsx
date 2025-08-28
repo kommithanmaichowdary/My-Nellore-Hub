@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { mockBusinesses, mockReviews } from '../data/mockData';
+import { mockReviews } from '../data/mockData';
 import { shoppingItems } from '../data/shoppingData';
 import { Business, Review, MallDetail } from '../types';
 import MallDetails from '../components/Shopping/MallDetails';
@@ -21,7 +21,7 @@ const MallDetailPage: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  const business = mockBusinesses.find(b => b.id === mallId && b.sector === 'shopping');
+  const business = null;
 
   const handleReviewSubmit = (rating: number, comment: string) => {
     console.log('Review Submitted:', { mallId, rating, comment });

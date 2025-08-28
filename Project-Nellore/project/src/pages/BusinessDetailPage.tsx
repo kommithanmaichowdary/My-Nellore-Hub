@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { MapPin, Phone, Clock, Star, User, Calendar } from 'lucide-react';
+import { MapPin, Phone, Clock, User, Calendar } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { mockBusinesses, mockReviews } from '../data/mockData';
+import { mockReviews } from '../data/mockData';
 import StarRating from '../components/UI/StarRating';
 
 interface Review {
@@ -50,12 +50,10 @@ const BusinessDetailPage: React.FC = () => {
           };
           setBusiness(mapped);
         } else {
-          const fallback = mockBusinesses.find(b => b.id === businessId) || null;
-          setBusiness(fallback);
+          setBusiness(null);
         }
       } catch (error) {
-        const fallback = mockBusinesses.find(b => b.id === businessId) || null;
-        setBusiness(fallback);
+        setBusiness(null);
       }
     };
 

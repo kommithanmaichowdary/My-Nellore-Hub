@@ -19,19 +19,15 @@ const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
             onError={(e) => { (e as any).currentTarget.onerror = null; (e as any).currentTarget.src = 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80'; }}
           />
-          <div className="absolute top-3 right-3 bg-white dark:bg-card-dark rounded-full px-2 py-1 shadow-md">
-            <div className="flex items-center space-x-1">
-              <StarRating rating={business.averageRating} />
-              <span className="text-sm font-medium text-gray-700 dark:text-text-primaryDark">
-                {business.averageRating.toFixed(1)}
-              </span>
-            </div>
-          </div>
         </div>
         
         <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-text-primaryDark mb-2 line-clamp-2 group-hover:text-amber-500 dark:group-hover:text-accent-darkAlt transition-colors duration-300">
-            {business.name}
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-text-primaryDark mb-2 line-clamp-2 group-hover:text-amber-500 dark:group-hover:text-accent-darkAlt transition-colors duration-300 flex items-center gap-2">
+            <span className="truncate">{business.name}</span>
+            <span className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-text-primaryDark">
+              <StarRating rating={business.averageRating} />
+              {Number.isFinite(business.averageRating as any) ? business.averageRating.toFixed(1) : '0.0'}
+            </span>
           </h3>
           
           <p className="text-gray-600 dark:text-text-secondaryDark text-sm mb-3 line-clamp-2 transition-colors duration-500">
@@ -55,14 +51,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
             </div>
           </div>
           
-          <div className="mt-3 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <StarRating rating={business.averageRating} />
-              <span className="text-sm text-gray-600 dark:text-text-secondaryDark">
-                ({business.totalReviews} reviews)
-              </span>
-            </div>
-            
+          <div className="mt-3 flex items-center justify-end">
             <span className="text-orange-500 dark:text-accent-darkAlt font-medium text-sm group-hover:underline">
               View Details →
             </span>

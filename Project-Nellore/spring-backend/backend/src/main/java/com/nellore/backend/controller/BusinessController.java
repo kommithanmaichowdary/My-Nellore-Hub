@@ -22,9 +22,12 @@ public class BusinessController {
     @GetMapping("/businesses")
     public List<Business> getBusinesses(
             @RequestParam(value = "status", required = false) String status,
-            @RequestParam(value = "type", required = false) String businessType
+            @RequestParam(value = "type", required = false) String businessType,
+            @RequestParam(value = "submittedBy", required = false) String submittedBy
     ) {
-        if (businessType != null && status != null) {
+        if (submittedBy != null) {
+            return businessService.getBusinessesBySubmittedBy(submittedBy);
+        } else if (businessType != null && status != null) {
             return businessService.getBusinessesByTypeAndStatus(businessType, status);
         } else if (businessType != null) {
             return businessService.getBusinessesByType(businessType);

@@ -86,6 +86,10 @@ public class BusinessService {
         return businessRepository.findByStatus(status);
     }
 
+    public List<Business> getBusinessesBySubmittedBy(String submittedBy) {
+        return businessRepository.findBySubmittedBy(submittedBy);
+    }
+
     public Business updateBusiness(Long id, Business updates) {
         Business existing = businessRepository.findById(id).orElseThrow(() -> new RuntimeException("Business not found"));
         if (updates.getBusinessName() != null) existing.setBusinessName(updates.getBusinessName());

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import SectorList from './SectorList';
+import BusinessCard from '../Business/BusinessCard';
 import { mockBusinesses } from '../../data/mockData';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { Search, Star } from 'lucide-react';
@@ -67,11 +67,11 @@ const ShoppingMalls: React.FC = () => {
               </div>
             </div>
           </div>
-          <SectorList
-            title={t('sector.shopping')}
-            items={filteredMalls.map(m => ({...m, imageUrl: m.image}))}
-            basePath="/business"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredMalls.map((mall) => (
+              <BusinessCard key={mall.id} business={mall as any} />
+            ))}
+          </div>
         </div>
       </section>
     </div>

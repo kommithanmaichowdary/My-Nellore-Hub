@@ -1,11 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import StarRating from '../UI/StarRating';
 
 interface SectorItem {
   id: string;
   name: string;
   description: string;
   imageUrl?: string;
+  averageRating?: number;
+  totalReviews?: number;
 }
 
 interface SectorListProps {
@@ -40,8 +43,14 @@ const SectorList: React.FC<SectorListProps> = ({ title, items, basePath }) => {
               </div>
             )}
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-text-primaryDark group-hover:text-amber-500 dark:group-hover:text-accent-darkAlt transition-colors duration-300">
-                {item.name}
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-text-primaryDark group-hover:text-amber-500 dark:group-hover:text-accent-darkAlt transition-colors duration-300 flex items-center gap-2">
+                <span className="truncate">{item.name}</span>
+                {typeof item.averageRating === 'number' && (
+                  <span className="flex items-center gap-1 text-sm font-medium text-gray-700 dark:text-text-primaryDark">
+                    <StarRating rating={item.averageRating} />
+                    {item.averageRating.toFixed(1)}
+                  </span>
+                )}
               </h3>
               <p className="text-gray-500 dark:text-text-secondaryDark text-sm mt-1 transition-colors duration-500">
                 {item.description}

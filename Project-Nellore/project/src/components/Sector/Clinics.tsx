@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import BusinessCard from '../Business/BusinessCard';
 import { Search, Filter } from 'lucide-react';
+import SectorList from './SectorList';
 
 const Clinics: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -80,11 +80,18 @@ const Clinics: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map(item => (
-              <BusinessCard key={item.id} business={item} />
-            ))}
-          </div>
+          <SectorList
+            title={"Clinics"}
+            items={filtered.map(item => ({
+              id: item.id,
+              name: item.name,
+              description: item.description,
+              imageUrl: item.image,
+              averageRating: item.averageRating,
+              totalReviews: item.totalReviews,
+            }))}
+            basePath="/business"
+          />
         </div>
       </section>
     </div>

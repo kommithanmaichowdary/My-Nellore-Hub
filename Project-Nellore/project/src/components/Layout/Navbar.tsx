@@ -67,7 +67,8 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex md:items-center md:space-x-4">
-            {/* Always show profile icon; dropdown entries depend on auth */}
+            {/* Hide profile icon on admin pages */}
+            {!isAdminPage && (
             <div className="relative">
               <button
                 className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light transition-colors duration-200 focus:outline-none"
@@ -89,7 +90,6 @@ const Navbar: React.FC = () => {
                   </Link>
                   {isAuthenticated ? (
                     <>
-                      {!isAdminPage && (
                         <>
                           <Link
                             to="/profile"
@@ -108,7 +108,6 @@ const Navbar: React.FC = () => {
                             </Link>
                           )}
                         </>
-                      )}
                       <button
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -130,6 +129,7 @@ const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
+            )}
 
             <ThemeToggle />
 
@@ -168,45 +168,49 @@ const Navbar: React.FC = () => {
       <div className={`${isOpen ? 'block' : 'hidden'} md:hidden bg-white dark:bg-gray-800 transition-colors duration-300`}>
         <div className="px-2 pt-2 pb-3 space-y-1">
           <div className="relative">
-            <button
-              className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light transition-colors duration-200 focus:outline-none"
-              onClick={() => setProfileMenuOpen((open) => !open)}
-              aria-haspopup="true"
-              aria-expanded={profileMenuOpen}
-            >
-              <UserCircle className="w-7 h-7 text-primary-light dark:text-primary-dark" />
-              {isAuthenticated && !isAdminPage && <span className="font-semibold">{user?.name || user?.email}</span>}
-            </button>
-            {profileMenuOpen && (
-              <div id="profile-dropdown" className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700">
-                <Link
-                  to="/upload"
-                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={() => { setProfileMenuOpen(false); setIsOpen(false); }}
+            {!isAdminPage && (
+              <>
+                <button
+                  className="flex items-center gap-2 w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light transition-colors duration-200 focus:outline-none"
+                  onClick={() => setProfileMenuOpen((open) => !open)}
+                  aria-haspopup="true"
+                  aria-expanded={profileMenuOpen}
                 >
-                  {t('nav.submit')}
-                </Link>
-                {isAuthenticated ? (
-                  <>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      {t('nav.logout')}
-                    </button>
-                  </>
-                ) : (
-                  <>
+                  <UserCircle className="w-7 h-7 text-primary-light dark:text-primary-dark" />
+                  {isAuthenticated && !isAdminPage && <span className="font-semibold">{user?.name || user?.email}</span>}
+                </button>
+                {profileMenuOpen && (
+                  <div id="profile-dropdown" className="absolute left-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700">
                     <Link
-                      to="/login"
+                      to="/upload"
                       className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={() => { setProfileMenuOpen(false); setIsOpen(false); }}
                     >
-                      {t('nav.login')}
+                      {t('nav.submit')}
                     </Link>
-                  </>
+                    {isAuthenticated ? (
+                      <>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          {t('nav.logout')}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          to="/login"
+                          className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => { setProfileMenuOpen(false); setIsOpen(false); }}
+                        >
+                          {t('nav.login')}
+                        </Link>
+                      </>
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             )}
           </div>
         </div>

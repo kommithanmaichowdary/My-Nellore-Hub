@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { Search, Filter } from 'lucide-react';
 import BusinessCard from '../Business/BusinessCard';
-import { restaurants, restaurantCategories, restaurantCollections } from '../../data/mockData';
+import { restaurants, restaurantCategories } from '../../data/mockData';
 import * as LucideIcons from 'lucide-react';
 
 const Restaurants: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [rating, setRating] = useState<number>(0);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const getIcon = (iconName: string) => {
     const IconComponent = LucideIcons[iconName as keyof typeof LucideIcons] as React.ComponentType<{ className?: string }>;
@@ -59,9 +59,7 @@ const Restaurants: React.FC = () => {
     return matchesSearch && matchesCategory && matchesRating;
   });
 
-  const handleRestaurantClick = (restaurantId: string) => {
-    navigate(`/restaurants/${restaurantId}`);
-  };
+  // Navigation handled by BusinessCard link
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background-dark transition-colors duration-500">

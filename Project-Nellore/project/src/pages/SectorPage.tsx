@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Search, Filter, Star, MapPin, Phone, Clock } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { mockBusinesses, sectors } from '../data/mockData';
-import { shoppingCategories } from '../data/shoppingData';
+import { sectors } from '../data/mockData';
 import BusinessCard from '../components/Business/BusinessCard';
-import ShoppingCategoryGrid from '../components/Shopping/ShoppingCategoryGrid';
 
 const SectorPage: React.FC = () => {
   const { sectorId } = useParams<{ sectorId: string }>();
-  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [ratingFilter, setRatingFilter] = useState<number>(0);
   const [approvedBusinesses, setApprovedBusinesses] = useState([]);
@@ -44,7 +40,7 @@ const SectorPage: React.FC = () => {
 
   const sector = sectors.find(s => s.id === sectorId);
   
-  const allBusinesses = [...mockBusinesses, ...approvedBusinesses];
+  const allBusinesses = approvedBusinesses as any[];
 
   // Debug log for allBusinesses and sectorId
   useEffect(() => {
@@ -197,5 +193,204 @@ const SectorPage: React.FC = () => {
     </div>
   );
 };
+
+export default SectorPage;
+                    placeholder="Search businesses..."
+
+                    value={searchTerm}
+
+                    onChange={(e) => setSearchTerm(e.target.value)}
+
+                    className="w-full px-4 py-2 pl-10 rounded-lg border border-gray-300 dark:border-border-dark focus:outline-none focus:ring-2 focus:ring-[#FF9F1C] dark:focus:ring-accent-darkAlt transition-all bg-gray-50 dark:bg-background-dark text-gray-900 dark:text-text-primaryDark placeholder-gray-400 dark:placeholder-text-secondaryDark"
+
+                  />
+
+                  <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+
+                </div>
+
+              </div>
+
+              <div className="flex items-center gap-3 md:w-auto">
+
+                <Filter className="w-5 h-5 text-amber-500 flex-shrink-0" />
+
+                <select
+
+                  value={ratingFilter}
+
+                  onChange={(e) => setRatingFilter(Number(e.target.value))}
+
+                  className="flex-grow md:flex-grow-0 px-4 py-2 rounded-lg border border-gray-300 dark:border-border-dark focus:outline-none focus:ring-2 focus:ring-[#FF9F1C] dark:focus:ring-accent-darkAlt bg-gray-50 dark:bg-background-dark text-gray-900 dark:text-text-primaryDark"
+
+                >
+
+                  <option value={0}>All Ratings</option>
+
+                  <option value={4}>4+ Stars</option>
+
+                  <option value={3}>3+ Stars</option>
+
+                  <option value={2}>2+ Stars</option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        {/* Business Grid */}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          {filteredBusinesses.map((business) => (
+
+            sector.id === 'shopping' ? (
+
+              <Link to={`/business/${business.id}`} key={business.id} className="block">
+
+              <div className="group bg-white dark:bg-card-dark rounded-2xl shadow-md dark:shadow-glow-dark hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-200 dark:border-border-dark hover:border-amber-500 dark:hover:border-accent-darkAlt cursor-pointer">
+
+                <div className="relative h-48 w-full overflow-hidden">
+
+                  <img
+
+                    src={business.image || 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80'}
+
+                    alt={business.name}
+
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+
+                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80'; }}
+
+                  />
+
+                </div>
+
+                
+
+                <div className="p-4">
+
+                  <div className="flex justify-between items-start mb-2 gap-2">
+
+                    <h3 className="text-lg font-semibold text-gray-800 dark:text-text-primaryDark line-clamp-2 group-hover:text-amber-500 dark:group-hover:text-accent-darkAlt transition-colors duration-300 flex-grow">
+
+                      {business.name}
+
+                    </h3>
+
+                    <div className="flex items-center bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded">
+
+                      <span className="text-green-700 dark:text-green-400 font-medium mr-1">
+
+                        {business.averageRating.toFixed(1)}
+
+                      </span>
+
+                      <Star className="w-4 h-4 text-green-700 dark:text-green-400" />
+
+                    </div>
+
+                  </div>
+
+                  
+
+                  <p className="text-gray-600 dark:text-text-secondaryDark text-sm mb-3 line-clamp-2 transition-colors duration-500">
+
+                    {business.description}
+
+                  </p>
+
+                  
+
+                  <div className="space-y-2">
+
+                    <div className="flex items-center text-gray-500 dark:text-text-secondaryDark text-sm">
+
+                      <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
+
+                      <span className="line-clamp-1">{business.address}</span>
+
+                    </div>
+
+                    
+
+                    <div className="flex items-center text-gray-500 dark:text-text-secondaryDark text-sm">
+
+                      <Phone className="w-4 h-4 mr-2 flex-shrink-0" />
+
+                      <span>{business.phone}</span>
+
+                    </div>
+
+                    
+
+                    <div className="flex items-center text-gray-500 dark:text-text-secondaryDark text-sm">
+
+                      <Clock className="w-4 h-4 mr-2 flex-shrink-0" />
+
+                      <span>{business.timings}</span>
+
+                    </div>
+
+                  </div>
+
+
+
+                  <div className="mt-3 flex items-center justify-between">
+
+                    <div />
+
+                    <span className="text-orange-500 dark:text-accent-darkAlt font-medium text-sm group-hover:underline">
+
+                      View Details →
+
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </Link>
+
+            ) : (
+
+              <BusinessCard key={business.id} business={business} />
+
+            )
+
+          ))}
+
+        </div>
+
+
+
+        {filteredBusinesses.length === 0 && (
+
+          <div className="text-center py-12">
+
+            <p className="text-gray-600">No businesses found matching your criteria.</p>
+
+          </div>
+
+        )}
+
+      </div>
+
+    </div>
+
+  );
+
+};
+
+
 
 export default SectorPage;

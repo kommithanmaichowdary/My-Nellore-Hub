@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Star } from 'lucide-react';
-import { mockBusinesses } from '../../data/mockData';
+import SectorList from './SectorList';
 import { useLanguage } from '../../contexts/LanguageContext';
 import BusinessCard from '../Business/BusinessCard';
 
@@ -41,7 +41,7 @@ const Hospitals: React.FC = () => {
   }, []);
 
   const allHospitals = useMemo(() => {
-    return [...mockBusinesses, ...approved];
+    return approved;
   }, [approved]);
 
   const filteredHospitals = useMemo(() => {
@@ -92,11 +92,18 @@ const Hospitals: React.FC = () => {
           </div>
 
           {/* Hospital List */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredHospitals.map((hospital) => (
-              <BusinessCard key={hospital.id} business={hospital} />
-            ))}
-          </div>
+          <SectorList
+            title={t('sector.hospitals')}
+            items={filteredHospitals.map(h => ({
+              id: h.id,
+              name: h.name,
+              description: h.description,
+              imageUrl: h.image,
+              averageRating: h.averageRating,
+              totalReviews: h.totalReviews,
+            }))}
+            basePath="/business"
+          />
 
           {filteredHospitals.length === 0 && (
             <div className="text-center py-12">
