@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
+// @ts-ignore
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Star } from 'lucide-react';
 import SectorList from './SectorList';
@@ -95,6 +97,12 @@ const Hospitals: React.FC = () => {
           </div>
 
           {/* Hospital List */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.35 }}
+          >
           <SectorList
             title={t('sector.hospitals')}
             items={filteredHospitals.map(h => ({
@@ -107,6 +115,7 @@ const Hospitals: React.FC = () => {
             }))}
             basePath="/business"
           />
+          </motion.div>
 
           {filteredHospitals.length === 0 && (
             <div className="text-center py-12">

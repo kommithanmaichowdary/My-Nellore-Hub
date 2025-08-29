@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+// @ts-ignore - local types added until deps are installed
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ArrowRight, Star, Users, MapPin, TrendingUp, Upload, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -6,16 +8,13 @@ import { sectors } from '../data/mockData';
 import * as LucideIcons from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-// Import background image
-import cityNightBackground from '../assets/pexels-photo-2341830.jpeg';
+// Background assets handled via CSS/URLs
 
 const HomePage: React.FC = () => {
   const { t } = useLanguage();
   const { user, isLoggingOut } = useAuth();
   const [showWelcome, setShowWelcome] = useState(false);
-  const [exiting, setExiting] = useState(false);
   const [showLogoutMsg, setShowLogoutMsg] = useState(false);
-  const [logoutExiting, setLogoutExiting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState<typeof sectors>([]);
   const navigate = useNavigate();
@@ -88,12 +87,8 @@ const HomePage: React.FC = () => {
       // User just logged out
       justLoggedOut.current = true;
       setShowLogoutMsg(true);
-      setLogoutExiting(false);
       setShowWelcome(false); // Suppress welcome message
-      const timer = setTimeout(() => {
-        setLogoutExiting(true);
-        setTimeout(() => setShowLogoutMsg(false), 500);
-      }, 3000);
+      const timer = setTimeout(() => setShowLogoutMsg(false), 3000);
       return () => clearTimeout(timer);
     } else if (!prevUserRef.current && user) {
       // User just logged in
@@ -105,26 +100,15 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (user && !justLoggedOut.current) {
       setShowWelcome(true);
-      setExiting(false);
-      const timer = setTimeout(() => {
-        setExiting(true);
-        setTimeout(() => setShowWelcome(false), 500); // match animation duration
-      }, 3000);
-      return () => {
-        clearTimeout(timer);
-      };
+      const timer = setTimeout(() => setShowWelcome(false), 3000);
+      return () => clearTimeout(timer);
     }
   }, [user]);
 
   useEffect(() => {
     if (showLogoutMsg) {
-      setLogoutExiting(false);
-      const timer1 = setTimeout(() => {
-        setLogoutExiting(true);
-        const timer2 = setTimeout(() => setShowLogoutMsg(false), 500);
-        return () => clearTimeout(timer2);
-      }, 3000);
-      return () => clearTimeout(timer1);
+      const timer = setTimeout(() => setShowLogoutMsg(false), 3000);
+      return () => clearTimeout(timer);
     }
   }, [showLogoutMsg]);
 
@@ -150,23 +134,35 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background-dark transition-colors duration-500">
       {/* Welcome Message */}
-      {user && showWelcome && !isLoggingOut && (
-        <div
-          className={`absolute top-10 left-1/2 -translate-x-1/2 z-30 bg-green-100 border border-green-300 text-green-800 px-6 py-4 rounded text-lg font-semibold shadow transition-all duration-500 ${exiting ? 'welcome-exit' : ''}`}
-          style={{ minWidth: '300px', maxWidth: '90vw' }}
-        >
-          Welcome, {user.name || user.email}!
-        </div>
-      )}
+      <AnimatePresence>
+        {user && showWelcome && !isLoggingOut && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4 }}
+            className="absolute top-10 left-1/2 -translate-x-1/2 z-30 bg-green-100 border border-green-300 text-green-800 px-6 py-4 rounded text-lg font-semibold shadow"
+            style={{ minWidth: '300px', maxWidth: '90vw' }}
+          >
+            Welcome, {user.name || user.email}!
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Logout Message */}
-      {showLogoutMsg && (
-        <div
-          className={`absolute top-10 left-1/2 -translate-x-1/2 z-30 bg-green-100 border border-green-300 text-green-800 px-6 py-4 rounded text-lg font-semibold shadow transition-all duration-500 ${logoutExiting ? 'welcome-exit' : ''}`}
-          style={{ minWidth: '300px', maxWidth: '90vw' }}
-        >
-          Logout successfully
-        </div>
-      )}
+      <AnimatePresence>
+        {showLogoutMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.4 }}
+            className="absolute top-10 left-1/2 -translate-x-1/2 z-30 bg-green-100 border border-green-300 text-green-800 px-6 py-4 rounded text-lg font-semibold shadow"
+            style={{ minWidth: '300px', maxWidth: '90vw' }}
+          >
+            Logout successfully
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image with Parallax Effect */}
@@ -239,7 +235,12 @@ const HomePage: React.FC = () => {
               </ul>
             )}
           </form>
-          <div className="animate-fade-in-up-delay-3 flex flex-col sm:flex-row gap-4 justify-center mt-4">
+          <motion.div className="flex flex-col sm:flex-row gap-4 justify-center mt-4"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <button
               onClick={scrollToCategories}
               className="group bg-transparent border-2 border-white/50 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg"
@@ -253,7 +254,7 @@ const HomePage: React.FC = () => {
               <span>Submit Business</span>
               <Upload className="w-5 h-5" />
             </Link>
-          </div>
+          </motion.div>
         </div>
 
         {/* Scroll Down Hint */}

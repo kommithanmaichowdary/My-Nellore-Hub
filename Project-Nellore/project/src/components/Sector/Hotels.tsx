@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
+// @ts-ignore
+import { motion } from 'framer-motion';
 import { Search, Filter } from 'lucide-react';
 import SectorList from './SectorList';
 
@@ -83,6 +85,12 @@ const Hotels: React.FC = () => {
             </div>
           </div>
 
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-50px' }}
+            transition={{ duration: 0.35 }}
+          >
           <SectorList
             title={"Hotels"}
             items={filtered.map(item => ({
@@ -95,6 +103,7 @@ const Hotels: React.FC = () => {
             }))}
             basePath="/business"
           />
+          </motion.div>
         </div>
       </section>
     </div>

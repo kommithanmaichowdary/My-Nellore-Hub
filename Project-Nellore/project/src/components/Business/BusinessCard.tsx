@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Business } from '../../types';
+// @ts-ignore - ensure types after install
+import { motion } from 'framer-motion';
 import StarRating from '../Common/StarRating';
 
 interface BusinessCardProps {
@@ -30,7 +32,13 @@ const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
 
   return (
     <Link to={`/business/${business.id}`} className="block">
-      <div className="group bg-white dark:bg-card-dark rounded-2xl shadow-md dark:shadow-glow-dark hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-200 dark:border-border-dark hover:border-amber-500 dark:hover:border-accent-darkAlt cursor-pointer">
+      <div className="[perspective:1000px]">
+        <motion.div
+          whileHover={{ y: -6, rotateX: 2, rotateY: -2 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: 'spring', stiffness: 250, damping: 20, mass: 0.5 }}
+          className="group bg-white dark:bg-card-dark rounded-2xl shadow-md dark:shadow-glow-dark hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-200 dark:border-border-dark hover:border-amber-500 dark:hover:border-accent-darkAlt cursor-pointer [transform-style:preserve-3d]"
+        >
         <div className="relative h-48 w-full overflow-hidden">
           <img
             src={getImageUrl(business.image)}
@@ -65,6 +73,7 @@ const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
             </span>
           </div>
         </div>
+        </motion.div>
       </div>
     </Link>
   );

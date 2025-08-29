@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
+// @ts-ignore - ensure types available after install
+import { motion } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
 import { Search, Filter, Star, MapPin, Phone, Clock } from 'lucide-react';
 import { sectors } from '../data/mockData';
@@ -145,7 +147,7 @@ const SectorPage: React.FC = () => {
 
         {/* Business Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBusinesses.map((business) => (
+          {filteredBusinesses.map((business, idx) => (
             sector.id === 'shopping' ? (
               <Link to={`/business/${business.id}`} key={business.id} className="block">
               <div className="group bg-white dark:bg-card-dark rounded-2xl shadow-md dark:shadow-glow-dark hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-200 dark:border-border-dark hover:border-amber-500 dark:hover:border-accent-darkAlt cursor-pointer">
@@ -205,7 +207,15 @@ const SectorPage: React.FC = () => {
               </div>
             </Link>
             ) : (
-              <BusinessCard key={business.id} business={business} />
+              <motion.div
+                key={business.id}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.35, delay: (idx % 6) * 0.05 }}
+              >
+                <BusinessCard business={business} />
+              </motion.div>
             )
           ))}
         </div>

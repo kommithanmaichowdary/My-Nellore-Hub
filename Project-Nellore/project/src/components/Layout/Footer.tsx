@@ -6,8 +6,12 @@ const Footer: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <footer id="footer-section" className="bg-headerfooter-light dark:bg-headerfooter-dark border-t border-border-light dark:border-border-dark text-text-secondaryLight dark:text-text-secondaryDark transition-colors duration-500 py-6 shadow-inner">
+    <footer id="footer-section" className="relative overflow-hidden backdrop-blur-md bg-white/70 dark:bg-gray-900/60 border-t border-white/20 dark:border-white/10 text-text-secondaryLight dark:text-text-secondaryDark transition-colors duration-500 py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="absolute inset-0 -z-10 pointer-events-none opacity-40">
+          <div className="absolute -top-16 -left-16 w-72 h-72 bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-600/20 dark:to-orange-600/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-gradient-to-br from-indigo-200 to-purple-200 dark:from-indigo-600/20 dark:to-purple-600/10 rounded-full blur-3xl"></div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
           <div className="col-span-1 md:col-span-2">

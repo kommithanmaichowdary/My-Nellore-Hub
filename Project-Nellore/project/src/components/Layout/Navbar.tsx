@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-headerfooter-light dark:bg-headerfooter-dark border-b border-border-light dark:border-border-dark shadow-lg transition-colors duration-500">
+    <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-gray-900/50 border-b border-white/20 dark:border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -57,10 +57,10 @@ const Navbar: React.FC = () => {
                 <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               </button>
             )}
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold transition-colors duration-500">
-                <span className="text-primary-light dark:text-primary-dark">My</span>
-                <span className="bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent dark:from-yellow-400 dark:to-orange-400 ml-1">Nellore Hub</span>
+            <Link to="/" className="flex-shrink-0 flex items-center group">
+              <span className="text-2xl font-extrabold tracking-tight transition-colors duration-500">
+                <span className="text-gray-900 dark:text-white">My</span>
+                <span className="ml-1 bg-[linear-gradient(90deg,#f59e0b,#f97316,#fb7185)] bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">Nellore Hub</span>
               </span>
             </Link>
           </div>
@@ -71,19 +71,19 @@ const Navbar: React.FC = () => {
             {!isAdminPage && (
             <div className="relative">
               <button
-                className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light transition-colors duration-200 focus:outline-none"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 focus:outline-none hover:bg-gray-100/70 dark:hover:bg-white/5"
                 onClick={() => setProfileMenuOpen((open) => !open)}
                 aria-haspopup="true"
                 aria-expanded={profileMenuOpen}
               >
-                <UserCircle className="w-7 h-7 text-primary-light dark:text-primary-dark" />
+                <UserCircle className="w-7 h-7 text-amber-500" />
                 {isAuthenticated && !isAdminPage && <span className="font-semibold">{user?.name || user?.email}</span>}
               </button>
               {profileMenuOpen && (
-                <div id="profile-dropdown" className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700">
+                <div id="profile-dropdown" className="absolute right-0 mt-2 w-56 bg-white/90 backdrop-blur-md dark:bg-gray-900/80 rounded-xl shadow-xl py-2 z-50 border border-white/20 dark:border-white/10">
                   <Link
                     to="/upload"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-100/80 dark:hover:bg-white/5 rounded-lg mx-2"
                     onClick={() => setProfileMenuOpen(false)}
                   >
                     {t('nav.submit')}
@@ -93,7 +93,7 @@ const Navbar: React.FC = () => {
                         <>
                           <Link
                             to="/profile"
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            className="block px-4 py-2 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-100/80 dark:hover:bg-white/5 rounded-lg mx-2"
                             onClick={() => setProfileMenuOpen(false)}
                           >
                             {t('nav.profile')}
@@ -101,7 +101,7 @@ const Navbar: React.FC = () => {
                           {user?.role === 'ADMIN' && (
                             <Link
                               to="/admin"
-                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                              className="block px-4 py-2 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-100/80 dark:hover:bg-white/5 rounded-lg mx-2"
                               onClick={() => setProfileMenuOpen(false)}
                             >
                               {t('nav.admin')}
@@ -110,7 +110,7 @@ const Navbar: React.FC = () => {
                         </>
                       <button
                         onClick={handleLogout}
-                        className="block w-full text-left px-4 py-2 text-sm bg-white dark:bg-gray-800 text-primary-light dark:text-primary-dark hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="block w-full text-left px-4 py-2 text-sm bg-transparent text-red-600 dark:text-red-400 hover:bg-red-50/70 dark:hover:bg-red-500/10 rounded-lg"
                       >
                         {t('nav.logout')}
                       </button>
@@ -119,7 +119,7 @@ const Navbar: React.FC = () => {
                     <>
                       <Link
                         to="/login"
-                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className="block px-4 py-2 text-sm text-gray-800 dark:text-gray-100 hover:bg-gray-100/80 dark:hover:bg-white/5 rounded-lg mx-2"
                         onClick={() => setProfileMenuOpen(false)}
                       >
                         {t('nav.login')}
@@ -152,7 +152,7 @@ const Navbar: React.FC = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-primary-light dark:hover:text-primary-light focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-xl text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white focus:outline-none hover:bg-gray-100/70 dark:hover:bg-white/5"
             >
               {isOpen ? (
                 <X className="block h-6 w-6" />

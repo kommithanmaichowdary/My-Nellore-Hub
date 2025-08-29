@@ -1,20 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
+// @ts-ignore
+import { motion } from 'framer-motion';
 // import { useNavigate } from 'react-router-dom';
 import { Search, Filter } from 'lucide-react';
 import BusinessCard from '../Business/BusinessCard';
-import { restaurants, restaurantCategories } from '../../data/mockData';
-import * as LucideIcons from 'lucide-react';
+import { restaurants } from '../../data/mockData';
 
 const Restaurants: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
   const [rating, setRating] = useState<number>(0);
   // const navigate = useNavigate();
-
-  const getIcon = (iconName: string) => {
-    const IconComponent = LucideIcons[iconName as keyof typeof LucideIcons] as React.ComponentType<{ className?: string }>;
-    return IconComponent ? <IconComponent className="w-6 h-6" /> : null;
-  };
 
   const [approved, setApproved] = useState<any[]>([]);
 
@@ -53,10 +48,9 @@ const Restaurants: React.FC = () => {
   const filteredRestaurants = mergedRestaurants.filter(restaurant => {
     const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          restaurant.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = !selectedCategory || restaurant.category === selectedCategory;
     const avgRating = Math.floor(restaurant.averageRating || 0);
     const matchesRating = rating === 0 || avgRating === rating;
-    return matchesSearch && matchesCategory && matchesRating;
+    return matchesSearch && matchesRating;
   });
 
   // Navigation handled by BusinessCard link
@@ -100,43 +94,21 @@ const Restaurants: React.FC = () => {
               </div>
             </div>
 
-            {/* Categories */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {restaurantCategories.map(category => (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id === selectedCategory ? '' : category.id)}
-                  className={`flex flex-col items-center p-4 rounded-lg border transition-all duration-300 group
-                    ${selectedCategory === category.id
-                      ? 'bg-amber-50 border-amber-500 dark:bg-amber-900/20 dark:border-accent-darkAlt'
-                      : 'bg-gray-50 dark:bg-background-dark border-gray-200 dark:border-border-dark'}
-                    hover:border-amber-500 dark:hover:border-accent-darkAlt`}
-                >
-                  <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-3 transition-colors duration-300
-                    ${selectedCategory === category.id
-                      ? 'bg-amber-100 dark:bg-amber-800/30 text-amber-700 dark:text-amber-300'
-                      : 'bg-amber-50 dark:bg-background-darkAlt text-amber-600 dark:text-amber-400'}
-                    group-hover:bg-amber-200 dark:group-hover:bg-amber-800/40`}
-                  >
-                    {getIcon(category.icon)}
-                  </div>
-                  <span className={`text-sm font-medium text-center transition-colors duration-300
-                    ${selectedCategory === category.id
-                      ? 'text-amber-800 dark:text-amber-300'
-                      : 'text-gray-800 dark:text-text-primaryDark'}
-                    group-hover:text-amber-700 dark:group-hover:text-amber-300`}
-                  >
-                    {category.name}
-                  </span>
-                </button>
-              ))}
-            </div>
+            {/* Categories removed as requested */}
           </div>
 
           {/* Restaurant List */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredRestaurants.map((restaurant) => (
-              <BusinessCard key={restaurant.id} business={restaurant as any} />
+            {filteredRestaurants.map((restaurant, idx) => (
+              <motion.div
+                key={restaurant.id}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.35, delay: (idx % 6) * 0.05 }}
+              >
+                <BusinessCard business={restaurant as any} />
+              </motion.div>
             ))}
           </div>
         </div>

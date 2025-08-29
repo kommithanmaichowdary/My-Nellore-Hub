@@ -1,4 +1,6 @@
 import React from 'react';
+// @ts-ignore - ensure types after install
+import { AnimatePresence, motion } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -35,40 +37,44 @@ function App() {
             <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
               <Navbar />
               <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/sector/:sectorId" element={<SectorPage />} />
-                  <Route path="/shopping/:categoryId" element={<ShoppingCategoryPage />} />
-                  <Route path="/mall/:mallId" element={<MallDetailPage />} />
-                  <Route path="/business/:businessId" element={<BusinessDetailPage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route path="/upload" element={<PublicUploadPage />} />
-                  <Route path="/admin/login" element={<AdminLoginPage />} />
-                  <Route
-                    path="/profile"
-                    element={
+                <AnimatePresence mode="wait">
+                  <Routes>
+                    <Route path="/" element={
+                      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
+                        <HomePage />
+                      </motion.div>
+                    } />
+                    <Route path="/sector/:sectorId" element={
+                      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.25 }}>
+                        <SectorPage />
+                      </motion.div>
+                    } />
+                    <Route path="/shopping/:categoryId" element={<ShoppingCategoryPage />} />
+                    <Route path="/mall/:mallId" element={<MallDetailPage />} />
+                    <Route path="/business/:businessId" element={<BusinessDetailPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/upload" element={<PublicUploadPage />} />
+                    <Route path="/admin/login" element={<AdminLoginPage />} />
+                    <Route path="/profile" element={
                       <PrivateRoute>
                         <ProfilePage />
                       </PrivateRoute>
-                    }
-                  />
-                  <Route
-                    path="/admin"
-                    element={
+                    } />
+                    <Route path="/admin" element={
                       <AdminRoute>
                         <AdminPage />
                       </AdminRoute>
-                    }
-                  />
-                  <Route path="/sector/shopping-malls" element={<ShoppingMalls />} />
-                  <Route path="/sector/hospitals" element={<Hospitals />} />
-                  <Route path="/sector/hotels" element={<Hotels />} />
-                  <Route path="/restaurants" element={<Restaurants />} />
-                  <Route path="/restaurants/collection/:collectionId" element={<Restaurants />} />
-                  <Route path="/restaurants/:restaurantId" element={<RestaurantDetailsPage />} />
-                  <Route path="/sector/clinics" element={<Clinics />} />
-                </Routes>
+                    } />
+                    <Route path="/sector/shopping-malls" element={<ShoppingMalls />} />
+                    <Route path="/sector/hospitals" element={<Hospitals />} />
+                    <Route path="/sector/hotels" element={<Hotels />} />
+                    <Route path="/restaurants" element={<Restaurants />} />
+                    <Route path="/restaurants/collection/:collectionId" element={<Restaurants />} />
+                    <Route path="/restaurants/:restaurantId" element={<RestaurantDetailsPage />} />
+                    <Route path="/sector/clinics" element={<Clinics />} />
+                  </Routes>
+                </AnimatePresence>
               </main>
               <Footer />
               <Chatbot />
