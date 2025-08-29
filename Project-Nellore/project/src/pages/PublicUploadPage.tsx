@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Building2, AlertCircle, CheckCircle, Upload, X } from 'lucide-react';
 // import { useLanguage } from '../contexts/LanguageContext';
 import { useAuth } from '../contexts/AuthContext';
 import { sectors } from '../data/mockData';
@@ -18,11 +18,10 @@ const PublicUploadPage: React.FC = () => {
     businessType: '',
     services: '',
     address: '',
-    timings: '',
-    imageUrl: ''
+    timings: ''
   });
-  // Preview not currently used
-  // const [previewImage, setPreviewImage] = useState<string>('');
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,25 +45,64 @@ const PublicUploadPage: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Image upload is not wired to backend storage yet
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setError('Please select a valid image file');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setError('Image size should be less than 5MB');
+        return;
+      }
+
+      setSelectedImage(file);
+      setError(null);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview('');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
-  // Prepare data for backend
-  const payload = {
-    ...formData,
-    submittedBy: user?.email || ''
-  };
-
     try {
+      const formDataToSend = new FormData();
+      
+      // Add all form fields
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+      
+      // Add submittedBy
+      formDataToSend.append('submittedBy', user?.email || '');
+      
+      // Add image if selected
+      if (selectedImage) {
+        formDataToSend.append('image', selectedImage);
+      }
+
       const response = await fetch('http://localhost:8080/api/businesses', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: formDataToSend // Don't set Content-Type header, let browser set it with boundary
       });
+      
       if (!response.ok) {
         throw new Error('Failed to submit business');
       }
@@ -296,18 +334,47 @@ const PublicUploadPage: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="imageUrl" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
-                  Image/Logo URL
+                <label htmlFor="image" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
+                  Business Image/Logo
                 </label>
-                <input
-                  type="url"
-                  id="imageUrl"
-                  name="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent text-text-primaryLight dark:text-text-primaryDark placeholder-text-secondaryLight dark:placeholder-text-secondaryDark transition-colors duration-500"
-                  placeholder="https://example.com/logo.jpg"
-                />
+                <div className="space-y-3">
+                  {!imagePreview ? (
+                    <div className="border-2 border-dashed border-border-light dark:border-border-dark rounded-xl p-6 text-center hover:border-accent-light dark:hover:border-accent-dark transition-colors duration-500">
+                      <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                      />
+                      <label htmlFor="image" className="cursor-pointer">
+                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-sm text-text-secondaryLight dark:text-text-secondaryDark">
+                          Click to upload image
+                        </p>
+                        <p className="text-xs text-text-secondaryLight dark:text-text-secondaryDark mt-1">
+                          PNG, JPG, JPEG up to 5MB
+                        </p>
+                      </label>
+                    </div>
+                  ) : (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-32 object-cover rounded-xl border border-border-light dark:border-border-dark"
+                      />
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

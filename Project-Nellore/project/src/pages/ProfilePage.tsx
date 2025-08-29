@@ -46,6 +46,26 @@ const ProfilePage: React.FC = () => {
     fetchUserBusinesses();
   }, [userEmail]);
 
+  // Helper function to get the correct image URL
+  const getImageUrl = (imagePath: string | undefined) => {
+    if (!imagePath) {
+      return 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80';
+    }
+    
+    // If it's already a full URL, return as is
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // If it's a local file path, construct the backend URL
+    if (imagePath.startsWith('uploads/')) {
+      const filename = imagePath.split('/').pop();
+      return `http://localhost:8080/api/images/${filename}`;
+    }
+    
+    return imagePath;
+  };
+
   if (!user) {
     return null;
   }

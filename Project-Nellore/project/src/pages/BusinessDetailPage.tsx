@@ -86,6 +86,26 @@ const BusinessDetailPage: React.FC = () => {
     }
   }, [businessId]);
 
+  // Helper function to get the correct image URL
+  const getImageUrl = (imagePath: string | undefined) => {
+    if (!imagePath) {
+      return 'https://images.pexels.com/photos/3184454/pexels-photo-3184454.jpeg?auto=compress&cs=tinysrgb&w=1200';
+    }
+    
+    // If it's already a full URL, return as is
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // If it's a local file path, construct the backend URL
+    if (imagePath.startsWith('uploads/')) {
+      const filename = imagePath.split('/').pop();
+      return `http://localhost:8080/api/images/${filename}`;
+    }
+    
+    return imagePath;
+  };
+
   const hasUserReviewed = isAuthenticated && user?.email
     ? businessReviews.some(r => r.userEmail === user.email)
     : false;
@@ -169,7 +189,7 @@ const BusinessDetailPage: React.FC = () => {
       <div className="mx-4 sm:mx-6 lg:mx-8 mt-8">
         <div className="relative h-64 md:h-80">
           <img
-            src={business.image || 'https://images.pexels.com/photos/3184454/pexels-photo-3184454.jpeg?auto=compress&cs=tinysrgb&w=1200'}
+            src={getImageUrl(business.image)}
             alt={business.name}
             className="w-full h-full object-cover rounded-lg"
           />

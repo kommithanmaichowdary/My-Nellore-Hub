@@ -16,9 +16,12 @@ public class BusinessService {
 
     @Autowired
     private ReviewRepository reviewRepository;
-
+    
     @Autowired
     private EmailService emailService;
+    
+    @Autowired
+    private FileUploadService fileUploadService;
 
     public Business submitBusiness(Business business) {
         business.setStatus("PENDING");
@@ -103,8 +106,17 @@ public class BusinessService {
     }
 
     public void deleteBusiness(Long id) {
+        // Get business to delete associated image
+        Business business = businessRepository.findById(id).orElse(null);
+        
         // Delete associated reviews first to avoid FK constraint issues
         reviewRepository.deleteByBusinessId(id);
+        
+        // Delete associated image file if it exists
+        if (business != null && business.getImageUrl() != null && business.getImageUrl().startsWith("uploads/")) {
+            fileUploadService.deleteImage(business.getImageUrl());
+        }
+        
         businessRepository.deleteById(id);
     }
 

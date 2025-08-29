@@ -72,13 +72,13 @@ public class ReviewService {
 		Double avgRating = reviewRepository.getAverageRatingByBusinessId(businessId);
 		Long reviewCount = reviewRepository.getReviewCountByBusinessId(businessId);
 		
-		if (avgRating != null) {
-			Business business = businessRepository.findById(businessId).orElse(null);
-			if (business != null) {
-				business.setAverageRating(avgRating);
-				business.setTotalReviews(reviewCount.intValue());
-				businessRepository.save(business);
-			}
+		Business business = businessRepository.findById(businessId).orElse(null);
+		if (business != null) {
+			double safeAvg = avgRating != null ? avgRating : 0.0;
+			int safeCount = reviewCount != null ? reviewCount.intValue() : 0;
+			business.setAverageRating(safeAvg);
+			business.setTotalReviews(safeCount);
+			businessRepository.save(business);
 		}
 	}
 }
