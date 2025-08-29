@@ -159,17 +159,7 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const deleteBusiness = async (id: number) => {
-    if (!confirm('Delete this business? This will remove its reviews too.')) return;
-    setError(null);
-    try {
-      const res = await fetch(`http://localhost:8080/api/businesses/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Failed to delete business');
-      fetchAllBusinesses(businessStatusFilter);
-    } catch (err: any) {
-      setError(err.message || 'Error deleting business');
-    }
-  };
+  // Delete action intentionally removed for Business Submissions
 
   const startEditReview = (rev: ReviewItem) => {
     setEditingReviewId(rev.id);
@@ -390,7 +380,6 @@ const AdminPage: React.FC = () => {
                               </>
                             )}
                             <button className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700" onClick={() => startEditBusiness(biz)}>Edit</button>
-                            <button className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700" onClick={() => deleteBusiness(biz.id)}>Delete</button>
                           </>
                         )}
                       </td>

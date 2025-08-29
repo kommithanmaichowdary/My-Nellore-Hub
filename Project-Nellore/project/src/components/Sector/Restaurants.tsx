@@ -54,8 +54,8 @@ const Restaurants: React.FC = () => {
     const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          restaurant.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = !selectedCategory || restaurant.category === selectedCategory;
-    const avgRating = restaurant.averageRating || 0;
-    const matchesRating = rating === 0 || Math.floor(avgRating) >= rating;
+    const avgRating = Math.floor(restaurant.averageRating || 0);
+    const matchesRating = rating === 0 || avgRating === rating;
     return matchesSearch && matchesCategory && matchesRating;
   });
 
@@ -90,9 +90,11 @@ const Restaurants: React.FC = () => {
                     className="flex-grow md:flex-grow-0 px-4 py-2 rounded-lg border border-gray-300 dark:border-border-dark focus:outline-none focus:ring-2 focus:ring-[#FF9F1C] dark:focus:ring-accent-darkAlt bg-gray-50 dark:bg-background-dark text-gray-900 dark:text-text-primaryDark"
                   >
                     <option value={0}>All Ratings</option>
-                    <option value={4}>4+ Stars</option>
-                    <option value={3}>3+ Stars</option>
-                    <option value={2}>2+ Stars</option>
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                    <option value={4}>4</option>
+                    <option value={5}>5</option>
                   </select>
                 </div>
               </div>

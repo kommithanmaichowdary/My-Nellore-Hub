@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Business } from '../../types';
+import StarRating from '../Common/StarRating';
 
 interface BusinessCardProps {
   business: Business;
@@ -46,6 +47,12 @@ const BusinessCard: React.FC<BusinessCardProps> = ({ business }) => {
           <h3 className="text-lg font-semibold text-gray-800 dark:text-text-primaryDark line-clamp-2 group-hover:text-amber-500 dark:group-hover:text-accent-darkAlt transition-colors duration-300">
             {business.name}
           </h3>
+          <div className="mt-2 flex items-center space-x-2">
+            <StarRating rating={business.averageRating || 0} size="sm" />
+            <span className="text-sm text-gray-600 dark:text-text-secondaryDark">
+              ({business.totalReviews || 0})
+            </span>
+          </div>
           <p className="text-gray-600 dark:text-text-secondaryDark text-sm mt-2 line-clamp-2">
             {business.description}
           </p>

@@ -55,7 +55,8 @@ const SectorPage: React.FC = () => {
       const matchesSector = normalize(business.sector) === sectorId;
       const matchesSearch = business.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            business.description?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesRating = ratingFilter === 0 || business.averageRating >= ratingFilter;
+      const avg = Math.floor(business.averageRating || 0);
+      const matchesRating = ratingFilter === 0 || avg === ratingFilter;
       const isApproved = business.status ? business.status === 'APPROVED' : true;
       if (matchesSector && isApproved) {
         console.log('Business passing filter:', business, 'sectorId:', sectorId);
@@ -131,9 +132,11 @@ const SectorPage: React.FC = () => {
                   className="flex-grow md:flex-grow-0 px-4 py-2 rounded-lg border border-gray-300 dark:border-border-dark focus:outline-none focus:ring-2 focus:ring-[#FF9F1C] dark:focus:ring-accent-darkAlt bg-gray-50 dark:bg-background-dark text-gray-900 dark:text-text-primaryDark"
                 >
                   <option value={0}>All Ratings</option>
-                  <option value={4}>4+ Stars</option>
-                  <option value={3}>3+ Stars</option>
-                  <option value={2}>2+ Stars</option>
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                  <option value={4}>4</option>
+                  <option value={5}>5</option>
                 </select>
               </div>
             </div>

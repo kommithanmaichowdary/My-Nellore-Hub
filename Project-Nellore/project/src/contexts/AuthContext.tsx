@@ -8,6 +8,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isAuthLoading: boolean;
   isLoggingOut: boolean;
   setIsLoggingOut: (val: boolean) => void;
 }
@@ -28,6 +29,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Fetch current user from backend on mount
@@ -36,6 +38,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
+      setIsAuthLoading(false);
     } else {
       // Fetch from backend if not in localStorage
       const fetchCurrentUser = async () => {
@@ -52,6 +55,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } catch {
           setUser(null);
           localStorage.removeItem('user');
+        } finally {
+          setIsAuthLoading(false);
         }
       };
       fetchCurrentUser();
@@ -121,6 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'ADMIN',
+    isAuthLoading,
     isLoggingOut,
     setIsLoggingOut
   };

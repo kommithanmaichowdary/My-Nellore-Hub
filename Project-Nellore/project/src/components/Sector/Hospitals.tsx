@@ -49,7 +49,8 @@ const Hospitals: React.FC = () => {
       if ((hospital.sector || '').toLowerCase() !== 'hospitals') return false;
       const matchesSearch = (hospital.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                           (hospital.description || '').toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesRating = ratingFilter === 0 || (hospital.averageRating || 0) >= ratingFilter;
+      const avg = Math.floor(hospital.averageRating || 0);
+      const matchesRating = ratingFilter === 0 || avg === ratingFilter;
       return matchesSearch && matchesRating;
     });
   }, [allHospitals, searchTerm, ratingFilter]);
@@ -82,9 +83,11 @@ const Hospitals: React.FC = () => {
                     className="flex-grow md:flex-grow-0 px-4 py-2 rounded-lg border border-gray-300 dark:border-border-dark focus:outline-none focus:ring-2 focus:ring-[#FF9F1C] dark:focus:ring-accent-darkAlt bg-gray-50 dark:bg-background-dark text-gray-900 dark:text-text-primaryDark"
                   >
                     <option value={0}>All Ratings</option>
-                    <option value={4}>4+ Stars</option>
-                    <option value={3}>3+ Stars</option>
-                    <option value={2}>2+ Stars</option>
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                    <option value={4}>4</option>
+                    <option value={5}>5</option>
                   </select>
                 </div>
               </div>
