@@ -6,17 +6,17 @@ const Footer: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <footer id="footer-section" className="relative overflow-hidden backdrop-blur-md bg-white/70 dark:bg-gray-900/60 border-t border-white/20 dark:border-white/10 text-text-secondaryLight dark:text-text-secondaryDark transition-colors duration-500 py-6">
+    <footer id="footer-section" className="relative overflow-hidden backdrop-blur-md bg-headerfooter-light/70 dark:bg-headerfooter-dark/60 border-t border-border-light/20 dark:border-border-dark/10 text-text-secondaryLight dark:text-text-secondaryDark transition-colors duration-500 py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="absolute inset-0 -z-10 pointer-events-none opacity-40">
-          <div className="absolute -top-16 -left-16 w-72 h-72 bg-gradient-to-br from-amber-200 to-orange-200 dark:from-amber-600/20 dark:to-orange-600/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-gradient-to-br from-indigo-200 to-purple-200 dark:from-indigo-600/20 dark:to-purple-600/10 rounded-full blur-3xl"></div>
+          <div className="absolute -top-16 -left-16 w-72 h-72 bg-gradient-to-br from-secondary-light to-secondary-light dark:from-secondary-dark/20 dark:to-secondary-dark/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-gradient-to-br from-accent-light to-primary-light dark:from-accent-dark/20 dark:to-primary-dark/10 rounded-full blur-3xl"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center text-white font-bold">
+              <div className="w-8 h-8 bg-gradient-to-r from-secondary-light to-primary-light rounded-lg flex items-center justify-center text-buttontext-light font-bold">
                 N
               </div>
               <span className="text-xl font-bold text-text-primaryLight dark:text-text-primaryDark transition-colors duration-500">Nellore Hub</span>

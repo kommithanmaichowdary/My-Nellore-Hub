@@ -6,56 +6,56 @@ export default {
     extend: {
       colors: {
         background: {
-          light: '#f4f4f9',
-          lighter: '#f9fafb',
-          dark: '#121212',
-          darkAlt: '#1e1e2f',
+          light: '#F0F2F5', // Soft light grey
+          lighter: '#FFFFFF', // Pure white for contrast
+          dark: '#1A202C', // Deep charcoal
+          darkAlt: '#2D3748', // Slightly lighter charcoal
         },
         card: {
-          light: '#ffffff',
-          dark: '#1f2937',
+          light: '#FFFFFF',
+          dark: '#2D3748',
         },
         headerfooter: {
-          light: '#ffffff',
-          dark: '#1e293b',
+          light: '#FFFFFF',
+          dark: '#1A202C',
         },
         border: {
-          light: '#e5e7eb',
-          dark: '#374151',
+          light: '#E2E8F0',
+          dark: '#4A5568',
         },
         text: {
-          primaryLight: '#1f2937',
-          secondaryLight: '#6b7280',
-          primaryDark: '#e5e7eb',
-          secondaryDark: '#9ca3af',
+          primaryLight: '#2D3748',
+          secondaryLight: '#718096',
+          primaryDark: '#E2E8F0',
+          secondaryDark: '#A0AEC0',
         },
         accent: {
-          light: '#3b82f6',
-          dark: '#0ea5e9',
-          darkAlt: '#14b8a6',
+          light: '#4A90E2', // Vibrant Blue
+          dark: '#38B2AC', // Teal
+          darkAlt: '#4299E1', // Lighter Blue
         },
         button: {
-          light: '#2563eb',
-          dark: '#14b8a6',
+          light: '#4A90E2',
+          dark: '#38B2AC',
         },
         buttontext: {
-          light: '#ffffff',
-          dark: '#000000',
+          light: '#FFFFFF',
+          dark: '#FFFFFF',
         },
         glow: {
-          dark: '#4CC9F0',
+          dark: '#38B2AC', // Matching dark accent
         },
         primary: {
-          light: '#2C3E50',
-          dark: '#4CC9F0',
+          light: '#3182CE', // Stronger Blue
+          dark: '#63B3ED', // Lighter Blue for contrast in dark mode
         },
         secondary: {
-          light: '#FF9F1C',
-          dark: '#FF9F1C',
+          light: '#F6AD55', // Soft Orange
+          dark: '#ECC94B', // Gold/Yellow for contrast
         },
       },
       boxShadow: {
-        'glow-dark': '0 0 16px 2px #14b8a6',
+        'glow-dark': '0 0 16px 2px #38B2AC', // Updated to match new dark accent
       },
       transitionProperty: {
         'colors': 'background-color, border-color, color, fill, stroke',
@@ -133,6 +133,7 @@ export default {
             transform: 'scale(1.05)',
           },
         },
+        'spin-slow': 'spin 8s linear infinite',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

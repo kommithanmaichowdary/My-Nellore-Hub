@@ -2,18 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary: #2C3E50;
-  --primary-dark: #1a2530;
-  --accent-1: #E74C3C;
-  --accent-1-dark: #c0392b;
-  --accent-2: #3498DB;
-  --accent-2-dark: #2980b9;
-  --background: #FFFFFF;
-  --background-alt: #F2F2F2;
-  --text: #333333;
-}
-
 /* Star effect */
 .star {
   position: absolute;
