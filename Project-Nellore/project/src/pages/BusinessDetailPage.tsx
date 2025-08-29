@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { MapPin, Phone, Clock, User, Calendar } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -178,6 +178,36 @@ const BusinessDetailPage: React.FC = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">Business Not Found</h1>
           <p className="text-gray-600">The requested business could not be found.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if business is approved
+  if (business.status !== 'APPROVED') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark">
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="bg-card-light dark:bg-card-dark rounded-xl shadow-md dark:shadow-glow-dark p-8 border border-border-light dark:border-border-dark">
+            <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Clock className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
+            </div>
+            <h1 className="text-2xl font-bold text-text-primaryLight dark:text-text-primaryDark mb-4">
+              Business Not Available
+            </h1>
+            <p className="text-text-secondaryLight dark:text-text-secondaryDark mb-6">
+              {business.status === 'PENDING' 
+                ? 'This business is currently under review and awaiting approval. Please check back later.'
+                : 'This business is not available for viewing.'
+              }
+            </p>
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-2 bg-accent-light dark:bg-accent-dark text-white px-6 py-3 rounded-lg hover:bg-accent-dark dark:hover:bg-accent-darkAlt transition-colors"
+            >
+              Back to Home
+            </Link>
+          </div>
         </div>
       </div>
     );
