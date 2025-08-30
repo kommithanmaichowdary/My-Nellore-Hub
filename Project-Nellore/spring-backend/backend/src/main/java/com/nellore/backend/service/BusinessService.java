@@ -58,12 +58,15 @@ public class BusinessService {
             Business business = businessOpt.get();
             business.setStatus("APPROVED");
             Business saved = businessRepository.save(business);
-            // Notify submitter
-            String to = business.getEmail();
-            String subject = "Business Approved";
-            String body = String.format("Hello %s, your business %s has been approved.",
-                    nullSafe(business.getFullName()), nullSafe(business.getBusinessName()));
-            emailService.sendPlainTextEmail(to, subject, body);
+            // Notify submitter using standardized template
+            emailService.sendBusinessStatusEmail(
+                    business.getEmail(),
+                    "APPROVED",
+                    nullSafe(business.getFullName()),
+                    nullSafe(business.getBusinessName()),
+                    nullSafe(business.getBusinessType()),
+                    null
+            );
             return saved;
         }
         throw new RuntimeException("Business not found");
@@ -75,11 +78,14 @@ public class BusinessService {
             Business business = businessOpt.get();
             business.setStatus("REJECTED");
             Business saved = businessRepository.save(business);
-            String to = business.getEmail();
-            String subject = "Business Not Approved";
-            String body = String.format("Hello %s, your business %s has not been approved.",
-                    nullSafe(business.getFullName()), nullSafe(business.getBusinessName()));
-            emailService.sendPlainTextEmail(to, subject, body);
+            emailService.sendBusinessStatusEmail(
+                    business.getEmail(),
+                    "REJECTED",
+                    nullSafe(business.getFullName()),
+                    nullSafe(business.getBusinessName()),
+                    nullSafe(business.getBusinessType()),
+                    null
+            );
             return saved;
         }
         throw new RuntimeException("Business not found");
