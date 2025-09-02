@@ -7,6 +7,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { sectors } from '../data/mockData';
 import * as LucideIcons from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import backgroundImage from '../assets/identity-card.png'; // Import the local image
 
 // Background assets handled via CSS/URLs
 
@@ -167,14 +168,15 @@ const HomePage: React.FC = () => {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image with Parallax Effect */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed z-0 transition-transform duration-700 scale-110 blur-[1px]"
+          className="absolute inset-0 bg-cover bg-center bg-fixed z-0 transition-transform duration-700 scale-110 blur-0"
           style={{
-            backgroundImage: `url('https://videos.openai.com/vg-assets/assets%2Ftask_01k44zgy5ff7ss6m2jn1w9mn0p%2F1756809014_img_1.webp?st=2025-09-02T08%3A49%3A41Z&se=2025-09-08T09%3A49%3A41Z&sks=b&skt=2025-09-02T08%3A49%3A41Z&ske=2025-09-08T09%3A49%3A41Z&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skoid=8ebb0df1-a278-4e2e-9c20-f2d373479b3a&skv=2019-02-02&sv=2018-11-09&sr=b&sp=r&spr=https%2Chttp&sig=y%2BI8TJ2iodXxyTb7gKoZgtgwHU4nADuBWr59g37rRCo%3D&az=oaivgprodscus')`,
+            backgroundImage: `url(${backgroundImage})`,
+            filter: 'brightness(1.3) contrast(1.1)', // Adjust brightness and contrast
           }}
         />
         {/* Overlay Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/80 z-1 transition-colors duration-500"></div>
-        <div className="absolute inset-0 bg-black/30 z-2 transition-colors duration-500"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/60 z-1 transition-colors duration-500"></div>
+        <div className="absolute inset-0 bg-black/10 z-2 transition-colors duration-500"></div>
         {/* Animated Stars */}
         <div className="absolute inset-0 z-2 pointer-events-none">
           {[...Array(20)].map((_, i) => (
