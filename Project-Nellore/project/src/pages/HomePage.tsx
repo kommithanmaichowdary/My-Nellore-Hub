@@ -169,7 +169,7 @@ const HomePage: React.FC = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed z-0 transition-transform duration-700 scale-110 blur-[1px]"
           style={{
-            backgroundImage: `url('https://as2.ftcdn.net/v2/jpg/08/42/08/03/1000_F_842080306_IYs25Z3XmrUu2k5mKyIkrxUq6o4i0vqE.jpg')`,
+            backgroundImage: `url('https://videos.openai.com/vg-assets/assets%2Ftask_01k44zgy5ff7ss6m2jn1w9mn0p%2F1756809014_img_1.webp?st=2025-09-02T08%3A49%3A41Z&se=2025-09-08T09%3A49%3A41Z&sks=b&skt=2025-09-02T08%3A49%3A41Z&ske=2025-09-08T09%3A49%3A41Z&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skoid=8ebb0df1-a278-4e2e-9c20-f2d373479b3a&skv=2019-02-02&sv=2018-11-09&sr=b&sp=r&spr=https%2Chttp&sig=y%2BI8TJ2iodXxyTb7gKoZgtgwHU4nADuBWr59g37rRCo%3D&az=oaivgprodscus')`,
           }}
         />
         {/* Overlay Gradients */}
