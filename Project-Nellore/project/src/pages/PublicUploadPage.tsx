@@ -119,11 +119,8 @@ const PublicUploadPage: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark transition-colors duration-500">
         <div className="bg-white dark:bg-card-dark rounded-2xl shadow-xl p-8 text-center border border-border-light dark:border-border-dark transition-colors duration-500">
           <h2 className="text-2xl font-bold text-text-primaryLight dark:text-text-primaryDark mb-4 transition-colors duration-500">
-            Only registered users can submit a business.
+            Only logged in users can submit a business. Please <a href="/login" className="text-blue-600 underline">login</a> to submit your business.
           </h2>
-          <p className="mb-6 text-text-secondaryLight dark:text-text-secondaryDark transition-colors duration-500">
-            Please <a href="/login" className="text-blue-600 underline">login</a> or <a href="/register" className="text-blue-600 underline">register</a> to submit your business.
-          </p>
         </div>
       </div>
     );

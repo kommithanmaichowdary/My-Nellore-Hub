@@ -4,6 +4,7 @@ import com.nellore.backend.model.User;
 import com.nellore.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,15 +18,9 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public User registerUser(String fullName, String email, String password) {
-        if (emailExists(email)) {
-            throw new RuntimeException("Email already registered");
-        }
-        User user = new User();
-        user.setFullName(fullName);
-        user.setEmail(email);
-        // Password logic removed for Google-only login
-        return userRepository.save(user);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }
 
     public User authenticateUser(String email, String password) {

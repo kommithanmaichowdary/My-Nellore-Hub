@@ -4,7 +4,6 @@ import { User } from '../types';
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
@@ -103,10 +102,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async () => {
-    throw new Error('Registration is handled via Google login.');
-  };
-
   const logout = async () => {
     setIsLoggingOut(true);
     await fetch('http://localhost:8080/api/logout', {
@@ -122,7 +117,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value: AuthContextType = {
     user,
     login,
-    register,
     logout,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'ADMIN',

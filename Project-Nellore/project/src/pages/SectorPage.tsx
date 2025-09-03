@@ -148,75 +148,17 @@ const SectorPage: React.FC = () => {
         {/* Business Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredBusinesses.map((business, idx) => (
-            sector.id === 'shopping' ? (
+            <motion.div
+              key={business.id}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.35, delay: (idx % 6) * 0.05 }}
+            >
               <Link to={`/business/${business.id}`} key={business.id} className="block">
-              <div className="group bg-white dark:bg-card-dark rounded-2xl shadow-md dark:shadow-glow-dark hover:shadow-xl transition-all duration-500 overflow-hidden border border-gray-200 dark:border-border-dark hover:border-amber-500 dark:hover:border-accent-darkAlt cursor-pointer">
-                <div className="relative h-48 w-full overflow-hidden">
-                  <img
-                    src={getImageUrl(business.image)}
-                    alt={business.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                    onError={(e) => { 
-                      e.currentTarget.onerror = null; 
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80'; 
-                    }}
-                  />
-                </div>
-                
-                <div className="p-4">
-                  <div className="flex justify-between items-start mb-2 gap-2">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-text-primaryDark line-clamp-2 group-hover:text-amber-500 dark:group-hover:text-accent-darkAlt transition-colors duration-300 flex-grow">
-                      {business.name}
-                    </h3>
-                    <div className="flex items-center bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded">
-                      <span className="text-green-700 dark:text-green-400 font-medium mr-1">
-                        {business.averageRating.toFixed(1)}
-                      </span>
-                      <Star className="w-4 h-4 text-green-700 dark:text-green-400" />
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-600 dark:text-text-secondaryDark text-sm mb-3 line-clamp-2 transition-colors duration-500">
-                    {business.description}
-                  </p>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center text-gray-500 dark:text-text-secondaryDark text-sm">
-                      <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span className="line-clamp-1">{business.address}</span>
-                    </div>
-                    
-                    <div className="flex items-center text-gray-500 dark:text-text-secondaryDark text-sm">
-                      <Phone className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span>{business.phone}</span>
-                    </div>
-                    
-                    <div className="flex items-center text-gray-500 dark:text-text-secondaryDark text-sm">
-                      <Clock className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span>{business.timings}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between">
-                    <div />
-                    <span className="text-orange-500 dark:text-accent-darkAlt font-medium text-sm group-hover:underline">
-                      View Details →
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-            ) : (
-              <motion.div
-                key={business.id}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.35, delay: (idx % 6) * 0.05 }}
-              >
                 <BusinessCard business={business} />
-              </motion.div>
-            )
+              </Link>
+            </motion.div>
           ))}
         </div>
 

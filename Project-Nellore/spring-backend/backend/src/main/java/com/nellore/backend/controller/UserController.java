@@ -25,19 +25,6 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
-        String fullName = body.get("fullName");
-        String email = body.get("email");
-        String password = body.get("password");
-        try {
-            userService.registerUser(fullName, email, password);
-            return ResponseEntity.ok(Map.of("message", "Registration successful"));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
         String email = body.get("email");

@@ -31,7 +31,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         try {
             userRepository.findByGoogleId(googleId)
                     .orElseGet(() -> {
-                        logger.info("Registering new user: {} ({}), GoogleID: {}", fullName, email, googleId);
+                        logger.info("Creating new user: {} ({}), GoogleID: {}", fullName, email, googleId);
                         User newUser = new User();
                         newUser.setGoogleId(googleId);
                         newUser.setEmail(email);

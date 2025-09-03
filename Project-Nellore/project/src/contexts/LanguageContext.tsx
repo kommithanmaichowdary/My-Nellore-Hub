@@ -21,7 +21,6 @@ const translations = {
     // Navigation
     'nav.home': 'Home',
     'nav.login': 'Login',
-    'nav.register': 'Register',
     'nav.logout': 'Logout',
     'nav.submit': 'Submit Business',
     'nav.admin': 'Admin',
@@ -60,15 +59,13 @@ const translations = {
     
     // Auth
     'auth.login': 'Login',
-    'auth.register': 'Register',
     'auth.email': 'Email',
     'auth.password': 'Password',
     'auth.confirmPassword': 'Confirm Password',
     'auth.fullName': 'Full Name',
     'auth.loginSuccess': 'Login successful!',
     'auth.loginError': 'Invalid credentials',
-    'auth.registerSuccess': 'Registration successful!',
-    'auth.registerError': 'Registration failed',
+    'auth.logout': 'Logout',
     
     // Business
     'business.details': 'Business Details',
@@ -124,7 +121,6 @@ const translations = {
     // Navigation
     'nav.home': 'హోమ్',
     'nav.login': 'లాగిన్',
-    'nav.register': 'రిజిస్టర్',
     'nav.logout': 'లాగ్ అవుట్',
     'nav.submit': 'వ్యాపారం సమర్పించండి',
     'nav.admin': 'అడ్మిన్',
@@ -163,15 +159,13 @@ const translations = {
     
     // Auth
     'auth.login': 'లాగిన్',
-    'auth.register': 'రిజిస్టర్',
     'auth.email': 'ఇమెయిల్',
     'auth.password': 'పాస్‌వర్డ్',
     'auth.confirmPassword': 'పాస్‌వర్డ్ నిర్ధారించండి',
     'auth.fullName': 'పూర్తి పేరు',
     'auth.loginSuccess': 'లాగిన్ విజయవంతమైంది!',
     'auth.loginError': 'చెల్లని ఆధారాలు',
-    'auth.registerSuccess': 'రిజిస్ట్రేషన్ విజయవంతమైంది!',
-    'auth.registerError': 'రిజిస్ట్రేషన్ విఫలమైంది',
+    'auth.logout': 'లాగౌట్',
     
     // Business
     'business.details': 'వ్యాపార వివరాలు',

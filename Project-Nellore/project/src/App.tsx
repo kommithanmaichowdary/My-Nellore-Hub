@@ -14,7 +14,6 @@ import ShoppingCategoryPage from './pages/ShoppingCategoryPage';
 import MallDetailPage from './pages/MallDetailPage';
 import BusinessDetailPage from './pages/BusinessDetailPage';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import PublicUploadPage from './pages/PublicUploadPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
@@ -53,7 +52,6 @@ function App() {
                     <Route path="/mall/:mallId" element={<MallDetailPage />} />
                     <Route path="/business/:businessId" element={<BusinessDetailPage />} />
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegisterPage />} />
                     <Route path="/upload" element={<PublicUploadPage />} />
                     <Route path="/admin/login" element={<AdminLoginPage />} />
                     <Route path="/profile" element={

@@ -46,11 +46,8 @@ const LoginPage: React.FC = () => {
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
             {t('auth.loginToNelloreHub')}
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            {t('auth.noAccount')}{' '}
-            <Link to="/register" className="font-medium text-orange-600 hover:text-orange-500">
-              {t('auth.register')}
-            </Link>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            Don't have an account?{' '}
           </p>
         </div>
 
