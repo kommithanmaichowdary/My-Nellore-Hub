@@ -108,6 +108,7 @@ public class BusinessService {
         if (updates.getImageUrl() != null) existing.setImageUrl(updates.getImageUrl());
         if (updates.getTimings() != null) existing.setTimings(updates.getTimings());
         if (updates.getStatus() != null) existing.setStatus(updates.getStatus());
+        if (updates.getPhone() != null) existing.setPhone(updates.getPhone());
         return businessRepository.save(existing);
     }
 

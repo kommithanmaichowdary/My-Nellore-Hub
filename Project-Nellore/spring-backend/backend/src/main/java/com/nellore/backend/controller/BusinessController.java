@@ -36,8 +36,8 @@ public class BusinessController {
             @RequestParam("businessType") String businessType,
             @RequestParam("services") String services,
             @RequestParam("address") String address,
-            @RequestParam(value = "timings", required = false) String timings,
-            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam("timings") String timings,
+            @RequestParam("image") MultipartFile image,
             @RequestParam("submittedBy") String submittedBy
     ) {
         Business business = new Business();
@@ -48,17 +48,16 @@ public class BusinessController {
         business.setBusinessType(businessType);
         business.setServices(services);
         business.setAddress(address);
-        business.setTimings(timings != null ? timings : "");
+        business.setTimings(timings);
         business.setSubmittedBy(submittedBy);
         
         // Handle image upload
-        if (image != null && !image.isEmpty()) {
-            try {
-                String imagePath = fileUploadService.uploadImage(image);
-                business.setImageUrl(imagePath);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to upload image", e);
-            }
+        // The image is now guaranteed to be present due to client-side validation
+        try {
+            String imagePath = fileUploadService.uploadImage(image);
+            business.setImageUrl(imagePath);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload image", e);
         }
         
         return businessService.submitBusiness(business);
@@ -118,8 +117,44 @@ public class BusinessController {
     }
 
     @PutMapping("/businesses/{id}")
-    public Business updateBusiness(@PathVariable Long id, @RequestBody Business updates) {
-        return businessService.updateBusiness(id, updates);
+    public Business updateBusiness(
+            @PathVariable Long id,
+            @RequestParam(value = "fullName", required = false) String fullName,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "businessName", required = false) String businessName,
+            @RequestParam(value = "businessType", required = false) String businessType,
+            @RequestParam(value = "services", required = false) String services,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "timings", required = false) String timings,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @RequestParam(value = "status", required = false) String status
+    ) {
+        Business existingBusiness = businessService.getBusiness(id);
+        if (existingBusiness == null) {
+            throw new RuntimeException("Business not found with id: " + id);
+        }
+
+        if (fullName != null) existingBusiness.setFullName(fullName);
+        if (email != null) existingBusiness.setEmail(email);
+        if (phone != null) existingBusiness.setPhone(phone);
+        if (businessName != null) existingBusiness.setBusinessName(businessName);
+        if (businessType != null) existingBusiness.setBusinessType(businessType);
+        if (services != null) existingBusiness.setServices(services);
+        if (address != null) existingBusiness.setAddress(address);
+        if (timings != null) existingBusiness.setTimings(timings);
+        if (status != null) existingBusiness.setStatus(status);
+
+        if (image != null) {
+            try {
+                String imagePath = fileUploadService.uploadImage(image);
+                existingBusiness.setImageUrl(imagePath);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload image", e);
+            }
+        }
+
+        return businessService.updateBusiness(id, existingBusiness);
     }
 
     @DeleteMapping("/businesses/{id}")

@@ -18,6 +18,8 @@ interface Business {
   businessType: string;
   services: string;
   address: string;
+  timings?: string;
+  imageUrl?: string;
   status: string;
   createdAt: string;
 }
@@ -40,7 +42,8 @@ const AdminPage: React.FC = () => {
   const [businessStatusFilter, setBusinessStatusFilter] = useState<'PENDING' | 'APPROVED' | 'REJECTED' | 'ALL'>('PENDING');
   const [allBusinesses, setAllBusinesses] = useState<Business[]>([]);
   const [editingBusinessId, setEditingBusinessId] = useState<number | null>(null);
-  const [businessEditDraft, setBusinessEditDraft] = useState<Partial<Business>>({});
+  const [businessEditDraft, setBusinessEditDraft] = useState<Partial<Business & { openingTime: string; closingTime: string }>>({});
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
 
   const [activeReviewSector, setActiveReviewSector] = useState<string>('hotels');
   const [reviewsBySector, setReviewsBySector] = useState<Record<string, ReviewItem[]>>({});
@@ -138,21 +141,51 @@ const AdminPage: React.FC = () => {
 
   const startEditBusiness = (biz: Business) => {
     setEditingBusinessId(biz.id);
-    setBusinessEditDraft(biz);
+    const [openingTime, closingTime] = biz.timings?.split(' - ') || ['', ''];
+    setBusinessEditDraft({ ...biz, openingTime, closingTime });
+    setSelectedImageFile(null); // Clear any previously selected image
+  };
+
+  const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedImageFile(e.target.files[0]);
+    }
   };
 
   const saveBusinessEdits = async () => {
     if (!editingBusinessId) return;
     setError(null);
-    const body = { ...businessEditDraft } as any;
+    const formDataToSend = new FormData();
+
+    // Combine opening and closing times
+    const timings = `${businessEditDraft.openingTime} - ${businessEditDraft.closingTime}`;
+    formDataToSend.append('timings', timings);
+
+    // Add other text fields
+    if (businessEditDraft.phone) formDataToSend.append('phone', businessEditDraft.phone);
+    if (businessEditDraft.services) formDataToSend.append('services', businessEditDraft.services);
+    if (businessEditDraft.address) formDataToSend.append('address', businessEditDraft.address);
+    if (businessEditDraft.businessName) formDataToSend.append('businessName', businessEditDraft.businessName);
+    formDataToSend.append('status', businessEditDraft.status || ''); // Always send status, default to empty string if null/undefined
+
+    // Handle image upload
+    if (selectedImageFile) {
+      formDataToSend.append('image', selectedImageFile);
+    } else if (businessEditDraft.imageUrl) {
+      // If no new image selected, but existing image URL, send it as a string
+      // The backend needs to distinguish between a new upload and retaining an old one.
+      // For simplicity, we'll just send the URL and backend will handle it.
+      formDataToSend.append('imageUrl', businessEditDraft.imageUrl);
+    }
+
     try {
       const res = await fetch(`http://localhost:8080/api/businesses/${editingBusinessId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: formDataToSend // Browser will set Content-Type: multipart/form-data
       });
       if (!res.ok) throw new Error('Failed to update business');
       setEditingBusinessId(null);
+      setSelectedImageFile(null); // Clear selected file after successful upload
       fetchAllBusinesses(businessStatusFilter);
     } catch (err: any) {
       setError(err.message || 'Error updating business');
@@ -327,9 +360,13 @@ const AdminPage: React.FC = () => {
                   <tr className="bg-gray-50 dark:bg-gray-700">
                     <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Business Name</th>
                     <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Type</th>
-                    <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Submitted By</th>
                     <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Phone</th>
+                    <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Services</th>
+                    <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Address</th>
+                    <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Timings</th>
+                    <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Image</th>
                     <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Status</th>
+                    <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Submitted By</th>
                     <th className="px-4 py-3 text-left text-gray-900 dark:text-gray-100">Actions</th>
                   </tr>
                 </thead>
@@ -348,8 +385,80 @@ const AdminPage: React.FC = () => {
                         )}
                       </td>
                       <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">{biz.businessType}</td>
-                      <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">{biz.fullName} ({biz.email})</td>
-                      <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">{biz.phone}</td>
+                      <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">
+                        {editingBusinessId === biz.id ? (
+                          <input
+                            className="border px-2 py-1 rounded w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                            value={businessEditDraft.phone || ''}
+                            onChange={e => setBusinessEditDraft(prev => ({ ...prev, phone: e.target.value }))}
+                          />
+                        ) : (
+                          biz.phone
+                        )}
+                      </td>
+                      <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">
+                        {editingBusinessId === biz.id ? (
+                          <textarea
+                            className="border px-2 py-1 rounded w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                            value={businessEditDraft.services || ''}
+                            onChange={e => setBusinessEditDraft(prev => ({ ...prev, services: e.target.value }))}
+                          />
+                        ) : (
+                          biz.services
+                        )}
+                      </td>
+                      <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">
+                        {editingBusinessId === biz.id ? (
+                          <textarea
+                            className="border px-2 py-1 rounded w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                            value={businessEditDraft.address || ''}
+                            onChange={e => setBusinessEditDraft(prev => ({ ...prev, address: e.target.value }))}
+                          />
+                        ) : (
+                          biz.address
+                        )}
+                      </td>
+                      <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">
+                        {editingBusinessId === biz.id ? (
+                          <div className="flex space-x-2">
+                            <input
+                              type="time"
+                              className="border px-2 py-1 rounded w-1/2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                              value={businessEditDraft.openingTime || ''}
+                              onChange={e => setBusinessEditDraft(prev => ({ ...prev, openingTime: e.target.value }))}
+                            />
+                            <input
+                              type="time"
+                              className="border px-2 py-1 rounded w-1/2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100"
+                              value={businessEditDraft.closingTime || ''}
+                              onChange={e => setBusinessEditDraft(prev => ({ ...prev, closingTime: e.target.value }))}
+                            />
+                          </div>
+                        ) : (
+                          biz.timings || 'N/A'
+                        )}
+                      </td>
+                      <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">
+                        {editingBusinessId === biz.id ? (
+                          <div className="flex flex-col items-center space-y-2">
+                            {selectedImageFile ? (
+                              <img src={URL.createObjectURL(selectedImageFile)} alt="Preview" className="w-16 h-16 object-cover rounded-md" />
+                            ) : biz.imageUrl ? (
+                              <img src={biz.imageUrl} alt="Current" className="w-16 h-16 object-cover rounded-md" />
+                            ) : (
+                              'No Image'
+                            )}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleImageFileChange}
+                              className="text-sm text-gray-900 dark:text-gray-100"
+                            />
+                          </div>
+                        ) : (
+                          biz.imageUrl ? <img src={biz.imageUrl} alt="Business" className="w-10 h-10 object-cover rounded-md" /> : 'N/A'
+                        )}
+                      </td>
                       <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">
                         {editingBusinessId === biz.id ? (
                           <select
@@ -365,6 +474,7 @@ const AdminPage: React.FC = () => {
                           biz.status
                         )}
                       </td>
+                      <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100">{biz.fullName} ({biz.email})</td>
                       <td className="border border-gray-200 dark:border-gray-700 px-4 py-2 space-x-2">
                         {editingBusinessId === biz.id ? (
                           <>

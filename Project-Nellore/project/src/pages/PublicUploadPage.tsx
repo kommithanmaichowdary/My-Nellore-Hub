@@ -18,7 +18,8 @@ const PublicUploadPage: React.FC = () => {
     businessType: '',
     services: '',
     address: '',
-    timings: ''
+    openingTime: '',
+    closingTime: '',
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -82,21 +83,37 @@ const PublicUploadPage: React.FC = () => {
     setIsSubmitting(true);
     setError(null);
 
+    // Client-side validation
+    if (!formData.openingTime || !formData.closingTime) {
+      setError('Please enter both opening and closing times.');
+      setIsSubmitting(false);
+      return;
+    }
+    if (!selectedImage) {
+      setError('Please upload a business image or logo.');
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const formDataToSend = new FormData();
       
-      // Add all form fields
+      // Combine opening and closing times
+      const timings = `${formData.openingTime} - ${formData.closingTime}`;
+      formDataToSend.append('timings', timings);
+
+      // Add all other form fields except openingTime and closingTime
       Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
+        if (key !== 'openingTime' && key !== 'closingTime') {
+          formDataToSend.append(key, value);
+        }
       });
       
       // Add submittedBy
       formDataToSend.append('submittedBy', user?.email || '');
       
-      // Add image if selected
-      if (selectedImage) {
-        formDataToSend.append('image', selectedImage);
-      }
+      // Add image
+      formDataToSend.append('image', selectedImage);
 
       const response = await fetch('http://localhost:8080/api/businesses', {
         method: 'POST',
@@ -316,23 +333,37 @@ const PublicUploadPage: React.FC = () => {
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="timings" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
-                  Business Timings
+                <label htmlFor="openingTime" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
+                  Opening Time *
                 </label>
                 <input
-                  type="text"
-                  id="timings"
-                  name="timings"
-                  value={formData.timings}
+                  type="time"
+                  id="openingTime"
+                  name="openingTime"
+                  required
+                  value={formData.openingTime}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent text-text-primaryLight dark:text-text-primaryDark placeholder-text-secondaryLight dark:placeholder-text-secondaryDark transition-colors duration-500"
-                  placeholder="e.g., 10:00 AM - 9:00 PM"
+                  className="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent text-text-primaryLight dark:text-text-primaryDark transition-colors duration-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="closingTime" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
+                  Closing Time *
+                </label>
+                <input
+                  type="time"
+                  id="closingTime"
+                  name="closingTime"
+                  required
+                  value={formData.closingTime}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-white dark:bg-background-dark border border-border-light dark:border-border-dark rounded-xl focus:outline-none focus:ring-2 focus:ring-accent-light dark:focus:ring-accent-dark focus:border-transparent text-text-primaryLight dark:text-text-primaryDark transition-colors duration-500"
                 />
               </div>
 
               <div>
                 <label htmlFor="image" className="block text-sm font-medium text-text-primaryLight dark:text-text-primaryDark mb-2 transition-colors duration-500">
-                  Business Image/Logo
+                  Business Image/Logo *
                 </label>
                 <div className="space-y-3">
                   {!imagePreview ? (
@@ -343,6 +374,7 @@ const PublicUploadPage: React.FC = () => {
                         name="image"
                         accept="image/*"
                         onChange={handleImageChange}
+                        required
                         className="hidden"
                       />
                       <label htmlFor="image" className="cursor-pointer">
